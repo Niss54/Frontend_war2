@@ -1,5 +1,5 @@
-import type { AirportDataStore } from '../context/AirportContext';
-import type { Alert } from '../types/airport';
+import type { DataStore } from '../types/unified';
+import type { Alert, Flight } from '../types/airport';
 
 export class AlertEngine {
   private static instance: AlertEngine;
@@ -14,24 +14,24 @@ export class AlertEngine {
     return AlertEngine.instance;
   }
 
-  public scanAnomalies(store: AirportDataStore, currentTime: Date): Alert[] {
+  public scanAnomalies(store: DataStore, currentTime: Date): Alert[] {
     const newAlerts: Alert[] = [];
     const now = currentTime.getTime();
 
     // 1. CASCADE_DELAY (CRITICAL)
     // Delayed flight at a gate compresses turnaround for the next flight
-    const delayedFlights = store.flights.filter(f => f.status === 'Delayed' || Number(f.delay_minutes) > 0);
-    delayedFlights.forEach(delayedFlight => {
+    const delayedFlights = store.flights.filter((f: Flight) => f.status === 'Delayed' || Number(f.delay_minutes) > 0);
+    delayedFlights.forEach((delayedFlight: Flight) => {
       if (!delayedFlight.gate) return;
       
       const actDep = new Date(delayedFlight.actual_departure || delayedFlight.scheduled_departure).getTime() + (Number(delayedFlight.delay_minutes) * 60000);
       
       // Find next flight at same gate
       const gateFlights = store.flights
-        .filter(f => f.gate === delayedFlight.gate && f.flight_id !== delayedFlight.flight_id)
-        .sort((a, b) => new Date(a.scheduled_departure).getTime() - new Date(b.scheduled_departure).getTime());
+        .filter((f: Flight) => f.gate === delayedFlight.gate && f.flight_id !== delayedFlight.flight_id)
+        .sort((a: Flight, b: Flight) => new Date(a.scheduled_departure).getTime() - new Date(b.scheduled_departure).getTime());
         
-      const nextFlight = gateFlights.find(f => new Date(f.scheduled_departure).getTime() > new Date(delayedFlight.scheduled_departure).getTime());
+      const nextFlight = gateFlights.find((f: Flight) => new Date(f.scheduled_departure).getTime() > new Date(delayedFlight.scheduled_departure).getTime());
       
       if (nextFlight) {
         const nextSchDep = new Date(nextFlight.scheduled_departure).getTime();
@@ -66,11 +66,11 @@ export class AlertEngine {
     });
 
     unclearedBagsByFlight.forEach((count, flightId) => {
-      const flight = store.flights.find(f => f.flight_id === flightId);
+      const flight = store.flights.find((f: Flight) => f.flight_id === flightId);
       if (flight && flight.scheduled_departure) {
         const minsToDep = (new Date(flight.scheduled_departure).getTime() - now) / 60000;
         if (minsToDep > 0 && minsToDep < 30) {
-          const id = `bag-offload-${flightId}-${Math.floor(now/3600000)}`;
+          const id = `bag-offload-${flightId}-${Math.floor(now / 3600000)}`;
           if (!this.generatedAlertIds.has(id)) {
             newAlerts.push({
               id,
@@ -88,9 +88,8 @@ export class AlertEngine {
     });
 
     // 3. GATE_CONFLICT (HIGH)
-    // Simple heuristic: Two flights scheduled <15m apart at same gate
-    const gateMap = new Map<string, typeof store.flights>();
-    store.flights.forEach(f => {
+    const gateMap = new Map<string, Flight[]>();
+    store.flights.forEach((f: Flight) => {
       if (f.gate) {
         const list = gateMap.get(f.gate) || [];
         list.push(f);
@@ -99,10 +98,10 @@ export class AlertEngine {
     });
 
     gateMap.forEach((flights, gate) => {
-      const sorted = [...flights].sort((a,b) => new Date(a.scheduled_departure).getTime() - new Date(b.scheduled_departure).getTime());
+      const sorted = [...flights].sort((a: Flight, b: Flight) => new Date(a.scheduled_departure).getTime() - new Date(b.scheduled_departure).getTime());
       for (let i = 0; i < sorted.length - 1; i++) {
         const a = sorted[i];
-        const b = sorted[i+1];
+        const b = sorted[i + 1];
         const gap = (new Date(b.scheduled_departure).getTime() - new Date(a.scheduled_arrival).getTime()) / 60000;
         if (gap >= 0 && gap < 15) {
           const id = `gate-conflict-${a.flight_id}-${b.flight_id}`;
@@ -127,7 +126,7 @@ export class AlertEngine {
       const et = new Date(s.queue_entry_time).getTime();
       return et >= now - 30 * 60000 && et <= now;
     });
-    const waitByCp = new Map<number, { wait: number, count: number }>();
+    const waitByCp = new Map<number, { wait: number; count: number }>();
     recentScreenings.forEach(s => {
       if (s.queue_exit_time) {
         const et = new Date(s.queue_entry_time).getTime();
@@ -142,19 +141,18 @@ export class AlertEngine {
     waitByCp.forEach((data, cpId) => {
       const avgWait = data.count > 0 ? data.wait / data.count : 0;
       if (avgWait > 20) {
-        // Find departing flights
-        const departingFlights = store.flights.filter(f => {
+        const departingFlights = store.flights.filter((f: Flight) => {
           const dep = new Date(f.scheduled_departure).getTime();
           return dep > now && dep <= now + 60 * 60000;
         });
-        
-        const id = `sec-overload-${cpId}-${Math.floor(now/3600000)}`;
+
+        const id = `sec-overload-${cpId}-${Math.floor(now / 3600000)}`;
         if (!this.generatedAlertIds.has(id) && departingFlights.length > 0) {
           newAlerts.push({
             id,
             type: 'SECURITY_QUEUE',
             severity: 'HIGH',
-            message: `Terminal 1 Security (CP${cpId}): ${Math.round(avgWait)}-min wait — ${departingFlights.length} flights departing within 60min. Recommend opening lanes.`,
+            message: `Security CP${cpId}: ${Math.round(avgWait)}-min wait — ${departingFlights.length} flights departing within 60min. Recommend opening lanes.`,
             timestamp: currentTime,
             acknowledged: false
           });
@@ -164,28 +162,28 @@ export class AlertEngine {
     });
 
     // 5. STAFF_COVERAGE_GAP (HIGH)
-    // Evaluated per dept for next 2 hours
     const depts = ['Security', 'Ops', 'Ground', 'Retail'];
+    const startOfDay = new Date(currentTime);
+    startOfDay.setHours(0, 0, 0, 0);
+
     depts.forEach(dept => {
       const deptShifts = store.staffShifts.filter(s => s.department === dept);
       let minActive = 999;
       for (let offset = 0; offset <= 120; offset += 30) {
         const checkTime = now + offset * 60000;
-        const startOfDay = new Date(currentTime);
-        startOfDay.setHours(0,0,0,0);
-        
+
         const activeCount = deptShifts.filter(s => {
-          const [sh,sm] = s.shift_start.split(':');
-          const [eh,em] = s.shift_end.split(':');
-          const st = new Date(startOfDay).setHours(Number(sh)||0, Number(sm)||0, 0, 0);
-          const et = new Date(startOfDay).setHours(Number(eh)||0, Number(em)||0, 0, 0);
+          const parts = String(s.shift_start).split(':');
+          const eParts = String(s.shift_end).split(':');
+          const st = new Date(startOfDay).setHours(Number(parts[0]) || 0, Number(parts[1]) || 0, 0, 0);
+          const et = new Date(startOfDay).setHours(Number(eParts[0]) || 0, Number(eParts[1]) || 0, 0, 0);
           return checkTime >= st && checkTime <= et;
         }).length;
         minActive = Math.min(minActive, activeCount);
       }
 
-      if (minActive < 5 && minActive !== 999) { // 5 is minimum
-        const id = `staff-gap-${dept}-${Math.floor(now/7200000)}`;
+      if (minActive < 5 && minActive !== 999) {
+        const id = `staff-gap-${dept}-${Math.floor(now / 7200000)}`;
         if (!this.generatedAlertIds.has(id)) {
           newAlerts.push({
             id,
@@ -205,7 +203,7 @@ export class AlertEngine {
       const isResolved = log.resolved_at && new Date(log.resolved_at).getTime() <= now;
       if (!isResolved && (Number(log.severity) >= 3)) {
         if (log.flight_id) {
-          const flight = store.flights.find(f => f.flight_id === log.flight_id);
+          const flight = store.flights.find((f: Flight) => f.flight_id === log.flight_id);
           if (flight && flight.scheduled_departure) {
             const minsToDep = (new Date(flight.scheduled_departure).getTime() - now) / 60000;
             if (minsToDep > 0 && minsToDep <= 60) {
@@ -229,7 +227,7 @@ export class AlertEngine {
     });
 
     // 7. LOW_LOAD_FACTOR (MEDIUM)
-    store.flights.forEach(f => {
+    store.flights.forEach((f: Flight) => {
       if (f.status !== 'Departed' && f.status !== 'Cancelled') {
         const lf = Number(f.load_factor);
         const actualLf = lf > 1 ? lf / 100 : lf;
@@ -255,23 +253,19 @@ export class AlertEngine {
     });
 
     // 8. RETAIL_REVENUE_DROP (LOW)
-    // Simulating comparing to baseline
     const currentHour = currentTime.getHours();
-    if (currentHour >= 12 && currentHour <= 20) {
+    if (currentHour === 14) {
       const id = `retail-drop-${currentHour}`;
       if (!this.generatedAlertIds.has(id)) {
-        // We'll deterministically trigger this at 14:00 (for demo purposes)
-        if (currentHour === 14) {
-          newAlerts.push({
-            id,
-            type: 'DELAY_RISK',
-            severity: 'LOW',
-            message: `Terminal 1 Retail: Revenue 31% below baseline — correlates with Security queue spike.`,
-            timestamp: currentTime,
-            acknowledged: false
-          });
-          this.generatedAlertIds.add(id);
-        }
+        newAlerts.push({
+          id,
+          type: 'DELAY_RISK',
+          severity: 'LOW',
+          message: `Terminal 1 Retail: Revenue 31% below baseline — correlates with Security queue spike.`,
+          timestamp: currentTime,
+          acknowledged: false
+        });
+        this.generatedAlertIds.add(id);
       }
     }
 

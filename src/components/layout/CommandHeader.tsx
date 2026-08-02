@@ -70,7 +70,7 @@ const NavLinks: React.FC = () => {
 };
 
 export const CommandHeader: React.FC = () => {
-  const { store, derivedData } = useAirportData();
+  const { store } = useAirportData();
   const { currentTime, isPlaying, togglePlay, speed, setSpeed, alerts } = useSimulation();
   
   const [isAlertPanelOpen, setIsAlertPanelOpen] = useState(false);
