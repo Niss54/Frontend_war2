@@ -1,0 +1,204 @@
+.handover-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.handover-modal {
+  width: 700px;
+  max-height: 80vh;
+  background: #0D0D14;
+  border: 1px solid #FFB800;
+  border-radius: 8px;
+  padding: 24px;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: #fff;
+}
+
+.handover-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: #8b92a5;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.handover-close:hover {
+  color: #fff;
+}
+
+.handover-header h1 {
+  font-family: "Courier New", Courier, monospace;
+  color: #00FF88;
+  font-size: 24px;
+  margin: 0 0 8px 0;
+}
+
+.handover-header-meta {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  color: #8b92a5;
+  display: flex;
+  justify-content: space-between;
+}
+
+.handover-section h2 {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  color: #FFB800;
+  border-bottom: 1px solid rgba(255, 184, 0, 0.3);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  margin-top: 0;
+}
+
+.handover-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.handover-table th {
+  text-align: left;
+  color: #8b92a5;
+  padding: 8px;
+  border-bottom: 1px solid #1E1E2E;
+  font-weight: normal;
+}
+
+.handover-table td {
+  padding: 8px;
+  border-bottom: 1px solid #1E1E2E;
+}
+
+.handover-table tr.row-delayed {
+  background: rgba(255, 51, 102, 0.1);
+}
+
+.handover-table tr.row-critical {
+  background: rgba(255, 51, 102, 0.1);
+}
+
+.handover-table tr.row-high {
+  background: rgba(255, 184, 0, 0.1);
+}
+
+.handover-badge-red {
+  color: #FF3366;
+  background: rgba(255, 51, 102, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.handover-badge-amber {
+  color: #FFB800;
+  background: rgba(255, 184, 0, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.handover-badge-green {
+  color: #00FF88;
+  background: rgba(0, 255, 136, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.handover-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.handover-stat-box {
+  background: #12121a;
+  border: 1px solid #1e1e2e;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.handover-stat-label {
+  font-size: 10px;
+  color: #8b92a5;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.handover-stat-value {
+  font-size: 16px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.handover-notes {
+  width: 100%;
+  height: 80px;
+  background: #12121a;
+  border: 1px solid #1e1e2e;
+  border-radius: 6px;
+  padding: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  resize: vertical;
+  outline: none;
+}
+
+.handover-notes:focus {
+  border-color: #FFB800;
+}
+
+.handover-footer {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  border-top: 1px solid #1e1e2e;
+  padding-top: 16px;
+}
+
+.handover-btn {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+}
+
+.handover-btn-primary {
+  background: rgba(0, 255, 136, 0.1);
+  color: #00FF88;
+  border: 1px solid rgba(0, 255, 136, 0.4);
+}
+
+.handover-btn-primary:hover {
+  background: rgba(0, 255, 136, 0.2);
+}
+
+.handover-btn-secondary {
+  background: transparent;
+  color: #8b92a5;
+  border: 1px solid #1e1e2e;
+}
+
+.handover-btn-secondary:hover {
+  color: #fff;
+  border-color: #333;
+}
