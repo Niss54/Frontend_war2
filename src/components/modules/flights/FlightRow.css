@@ -46,7 +46,7 @@
 
 /* Columns */
 .fr-dot-col { width: 24px; display: flex; justify-content: center; }
-.fr-flight-col { width: 160px; }
+.fr-flight-col { width: 220px; }
 .fr-airline-col { width: 50px; color: #8b92a5; font-weight: bold; }
 .fr-dest-col { flex: 1; min-width: 120px; font-weight: bold; }
 .fr-time-col { width: 60px; font-family: monospace; color: #8b92a5; }
@@ -54,7 +54,7 @@
 .fr-est-col.delayed-text { color: #FF3366; font-weight: bold; }
 .fr-gate-col { width: 50px; }
 .fr-term-col { width: 50px; color: #8b92a5; }
-.fr-status-col { width: 180px; }
+.fr-status-col { width: 280px; }
 .fr-risk-col { width: 30px; display: flex; justify-content: flex-end; }
 
 .status-dot {
@@ -84,15 +84,8 @@
   height: 28px;
   width: 18px;
   font-size: 16px;
-  line-height: 28px;
 }
 
-.flight-split-flap .char-top, 
-.status-split-flap .char-top {
-  line-height: 28px;
-}
-
-.flight-split-flap .char-bottom, 
-.status-split-flap .char-bottom {
-  line-height: 0;
+.flight-split-flap .char-inner,
+.status-split-flap .char-inner {
 }

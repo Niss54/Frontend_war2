@@ -6,8 +6,8 @@ import { CommandHeader } from './components/core/layout/CommandHeader';
 import { CommandPalette } from './components/core/ui/CommandPalette';
 import { OpsLogTicker } from './components/core/ui/OpsLogTicker';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
-import { ErrorBoundary } from './components/core/layout/ErrorBoundary';
-import { PanelSkeleton } from './components/core/layout/PanelSkeleton';
+import { ErrorBoundary } from './components/core/ui/ErrorBoundary';
+import { SkeletonPanel } from './components/core/ui/SkeletonPanel';
 import './App.css';
 
 // Lazy load all major panels
@@ -23,16 +23,12 @@ const GlobalShortcuts: React.FC = () => {
 };
 
 function App() {
-  const { store, derivedData, isLoading, error, loadProgress } = useAirportData();
+  const { store, derivedData, isLoading, error } = useAirportData();
 
   if (isLoading) {
     return (
-      <div className="loading" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', gap: '20px' }}>
-        <div style={{ fontSize: '24px', fontWeight: 'bold' }}>INITIALIZING ENGINE</div>
-        <div style={{ width: '300px', height: '10px', background: '#1e1e2e', borderRadius: '5px', overflow: 'hidden' }}>
-          <div style={{ width: `${loadProgress}%`, height: '100%', background: '#4A9EFF', transition: 'width 0.3s ease' }}></div>
-        </div>
-        <div style={{ fontSize: '14px', color: '#8b92a5' }}>Loading 8 datasets (PapaParse parallel)... {loadProgress}%</div>
+      <div style={{ height: '100vh', width: '100vw', background: '#050508' }}>
+        <SkeletonPanel />
       </div>
     );
   }
@@ -46,47 +42,47 @@ function App() {
       <CommandHeader />
       <CommandPalette />
       <div className="app-content">
-        <ErrorBoundary fallbackMessage="The routing module crashed.">
-          <Suspense fallback={<PanelSkeleton />}>
+        <ErrorBoundary fallbackName="Routing Module">
+          <Suspense fallback={<SkeletonPanel />}>
             <Routes>
               <Route path="/" element={<Navigate to="/flights" replace />} />
               <Route path="/flights" element={
-                <ErrorBoundary fallbackMessage="Flight Ops Board is temporarily unavailable.">
+                <ErrorBoundary fallbackName="Flight Ops Board">
                   <FlightOpsBoard />
                 </ErrorBoundary>
               } />
               <Route path="/gates" element={
-                <ErrorBoundary fallbackMessage="Gate Management is temporarily unavailable.">
+                <ErrorBoundary fallbackName="Gate Management">
                   <GatePanel />
                 </ErrorBoundary>
               } />
               <Route path="/baggage" element={
-                <ErrorBoundary fallbackMessage="Baggage Operations is temporarily unavailable.">
+                <ErrorBoundary fallbackName="Baggage Operations">
                   <PaxBagOperations defaultTab="baggage" />
                 </ErrorBoundary>
               } />
               <Route path="/passengers" element={
-                <ErrorBoundary fallbackMessage="Passenger Flow is temporarily unavailable.">
+                <ErrorBoundary fallbackName="Passenger Flow">
                   <PaxBagOperations defaultTab="passengers" />
                 </ErrorBoundary>
               } />
               <Route path="/security" element={
-                <ErrorBoundary fallbackMessage="Security View is temporarily unavailable.">
+                <ErrorBoundary fallbackName="Security View">
                   <OpsSupport defaultTab="security" />
                 </ErrorBoundary>
               } />
               <Route path="/staff" element={
-                <ErrorBoundary fallbackMessage="Staff View is temporarily unavailable.">
+                <ErrorBoundary fallbackName="Staff View">
                   <OpsSupport defaultTab="staff" />
                 </ErrorBoundary>
               } />
               <Route path="/maintenance" element={
-                <ErrorBoundary fallbackMessage="Maintenance View is temporarily unavailable.">
+                <ErrorBoundary fallbackName="Maintenance View">
                   <OpsSupport defaultTab="maintenance" />
                 </ErrorBoundary>
               } />
               <Route path="/retail" element={
-                <ErrorBoundary fallbackMessage="Retail Analytics is temporarily unavailable.">
+                <ErrorBoundary fallbackName="Retail Analytics">
                   <RetailPanel />
                 </ErrorBoundary>
               } />
@@ -100,4 +96,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
