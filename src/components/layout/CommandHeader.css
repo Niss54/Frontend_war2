@@ -1,0 +1,318 @@
+.command-header {
+  display: flex;
+  height: 80px;
+  background-color: #050508;
+  border-bottom: 1px solid #00FF88;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+/* ZONE A */
+.zone-a {
+  width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-right: 1px solid #1e1e2e;
+}
+
+.airport-id {
+  display: flex;
+  flex-direction: column;
+}
+
+.icao-code {
+  font-family: monospace;
+  font-size: 24px;
+  font-weight: bold;
+  color: #00FF88;
+  line-height: 1;
+}
+
+.airport-name {
+  font-size: 10px;
+  color: #6c757d;
+  text-transform: uppercase;
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+.live-clock-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.live-clock {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 16px;
+  font-weight: bold;
+  color: #00FF88;
+  text-shadow: 0 0 8px #00FF88;
+}
+
+.live-date {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  color: #FFB300; /* Amber */
+  margin-top: 2px;
+}
+
+.ops-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  background-color: rgba(255,255,255,0.05);
+  border: 1px solid #333;
+}
+
+.badge.nominal {
+  color: #00FF88;
+  border-color: rgba(0, 255, 136, 0.3);
+}
+
+.badge.alert {
+  color: #FF3366;
+  border-color: rgba(255, 51, 102, 0.3);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dot.nominal {
+  background-color: #00FF88;
+  box-shadow: 0 0 5px #00FF88;
+  animation: pulse-green 2s infinite;
+}
+
+.dot.alert {
+  background-color: #FF3366;
+  box-shadow: 0 0 5px #FF3366;
+  animation: pulse-red 1s infinite;
+}
+
+@keyframes pulse-green {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-red {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.4); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ZONE B */
+.zone-b {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 16px;
+  border-right: 1px solid #1e1e2e;
+}
+
+.kpi-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
+}
+
+.kpi-label {
+  font-size: 10px;
+  color: #8b92a5;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.kpi-value-container {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.kpi-number {
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.kpi-number.green { color: #00FF88; }
+.kpi-number.amber { color: #FFB300; }
+.kpi-number.red { color: #FF3366; }
+.kpi-number.pulse-red { 
+  color: #FF3366; 
+  animation: pulse-text-red 1s infinite; 
+}
+
+@keyframes pulse-text-red {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.kpi-subtext {
+  font-size: 10px;
+  color: #6c757d;
+  margin-top: 4px;
+}
+
+.kpi-trend {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.kpi-trend.up { color: #00FF88; }
+.kpi-trend.down { color: #FF3366; }
+.kpi-trend.neutral { color: #8b92a5; }
+
+/* ZONE C */
+.zone-c {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.ticker-container {
+  height: 20px;
+  overflow: hidden;
+  background: rgba(255, 51, 102, 0.1);
+  border: 1px solid rgba(255, 51, 102, 0.2);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.ticker-content {
+  display: flex;
+  white-space: nowrap;
+  animation: scroll-left 15s linear infinite;
+  font-size: 10px;
+  color: #FF3366;
+  padding-left: 100%;
+}
+
+.ticker-container:hover .ticker-content {
+  animation-play-state: paused;
+}
+
+.ticker-item {
+  margin-right: 30px;
+  font-family: monospace;
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.nav-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid #1E1E2E;
+  border-radius: 4px;
+  color: #8b92a5;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.nav-btn:hover, .nav-btn.active {
+  border-color: #00FF88;
+  color: #00FF88;
+  background: rgba(0, 255, 136, 0.05);
+}
+
+.nav-label {
+  font-size: 8px;
+  margin-top: 2px;
+  font-weight: bold;
+}
+
+/* Simulation Controls */
+.sim-controls {
+  position: absolute;
+  top: 85px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #050508;
+  border: 1px solid #1e1e2e;
+  padding: 6px 12px;
+  border-radius: 6px;
+  z-index: 100;
+}
+
+.sim-time {
+  font-family: "Courier New", Courier, monospace;
+  color: #00FF88;
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.sim-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.sim-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.sim-speed {
+  background: transparent;
+  border: 1px solid #333;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.sim-speed:hover {
+  border-color: #00FF88;
+}
