@@ -35,13 +35,16 @@ export function useFlightFilter() {
     if (flightIndex.size === 0) return [];
     
     let filtered = Array.from(flightIndex.values());
-    const todayStr = currentTime.toISOString().split('T')[0];
+    const nowMs = currentTime.getTime();
+    const endMs = nowMs + 24 * 60 * 60 * 1000;
+    const pastMs = nowMs - 6 * 60 * 60 * 1000; // Keep flights from last 6 hours too
 
-    // Filter to today
-    filtered = filtered.filter(f => 
-      f.flight.scheduled_departure?.startsWith(todayStr) || 
-      f.flight.scheduled_arrival?.startsWith(todayStr)
-    );
+    // Filter to active window (-6h to +24h)
+    filtered = filtered.filter(f => {
+      const dep = f.flight.scheduled_departure ? new Date(f.flight.scheduled_departure).getTime() : 0;
+      const arr = f.flight.scheduled_arrival ? new Date(f.flight.scheduled_arrival).getTime() : 0;
+      return (dep >= pastMs && dep <= endMs) || (arr >= pastMs && arr <= endMs);
+    });
 
     // Apply URL Filters
     if (searchQuery) {

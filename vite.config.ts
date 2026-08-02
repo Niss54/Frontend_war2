@@ -1,28 +1,20 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id: string) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
-              return 'vendor';
-            }
-            if (id.includes('framer-motion')) {
-              return 'motion';
-            }
-            if (id.includes('papaparse')) {
-              return 'csv';
-            }
-            return 'modules';
-          }
+        manualChunks: (id) => {
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) return 'vendor';
+          if (id.includes('node_modules/react-router-dom/')) return 'router';
+          if (id.includes('node_modules/framer-motion/')) return 'motion';
+          if (id.includes('node_modules/papaparse/')) return 'csv';
+          if (id.includes('node_modules/lucide-react/')) return 'icons';
         }
       }
-    },
-    chunkSizeWarningLimit: 1500
+    }
   }
-})
+});

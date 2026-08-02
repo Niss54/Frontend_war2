@@ -6,6 +6,7 @@ import { useFlightFilter } from '../../../hooks/useFlightFilter';
 import { FlightRow } from './FlightRow';
 import { FlightDetailPanel } from './FlightDetailPanel';
 import { DelayRiskLeaderboard } from './DelayRiskLeaderboard';
+import { SkeletonPanel } from '../../core/ui/SkeletonPanel';
 
 import { eventBus, FLIGHT_STATUS_CHANGED } from '../../../utils/EventBus';
 import './FlightOpsBoard.css';
@@ -71,7 +72,7 @@ export const FlightOpsBoard: React.FC = () => {
     setSearchParams(newParams, { replace: true });
   };
 
-  if (isLoading) return <div className="board-loading">Initializing Engine...</div>;
+  if (isLoading) return <SkeletonPanel />;
   if (error) return <div className="board-error">Data Engine Error: {error}</div>;
 
   return (
