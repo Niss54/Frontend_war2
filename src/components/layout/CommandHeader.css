@@ -316,3 +316,34 @@
 .sim-speed:hover {
   border-color: #00FF88;
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .command-header {
+    flex-direction: column;
+    height: auto;
+    padding-bottom: 12px;
+  }
+  
+  .zone-a, .zone-b, .zone-c {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #1e1e2e;
+    padding: 8px 16px;
+    justify-content: center;
+  }
+  
+  .zone-b {
+    flex-wrap: wrap;
+    gap: 16px;
+    /* KPI tiles stack 2x3 or 3x2 */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .zone-c {
+    border-bottom: none;
+    align-items: center;
+    gap: 12px;
+  }
+}

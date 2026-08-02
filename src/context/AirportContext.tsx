@@ -12,12 +12,14 @@ const AirportContext = createContext<AirportContextValue>({
   timelineIndex: new Map(),
   derivedData: null,
   isLoading: true,
+  loadProgress: 0,
   error: null,
 });
 
 export function AirportProvider({ children }: { children: React.ReactNode }) {
   const [store, setStore] = useState<DataStore | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadProgress, setLoadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   // Load all datasets on mount
@@ -27,7 +29,9 @@ export function AirportProvider({ children }: { children: React.ReactNode }) {
       try {
         setIsLoading(true);
         setError(null);
-        const data = await loadAllDatasets();
+        const data = await loadAllDatasets((progress) => {
+          if (!cancelled) setLoadProgress(progress);
+        });
         if (!cancelled) {
           setStore(data);
           console.log('[AirportContext] Data loaded successfully:', {
@@ -89,6 +93,7 @@ export function AirportProvider({ children }: { children: React.ReactNode }) {
     timelineIndex,
     derivedData,
     isLoading,
+    loadProgress,
     error,
   };
 
