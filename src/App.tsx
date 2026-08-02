@@ -4,6 +4,7 @@ import { useAirportData } from './context/AirportContext';
 import { FilterProvider } from './context/FilterContext';
 import { CommandHeader } from './components/core/layout/CommandHeader';
 import { CommandPalette } from './components/core/ui/CommandPalette';
+import { OpsLogTicker } from './components/core/ui/OpsLogTicker';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { ErrorBoundary } from './components/core/layout/ErrorBoundary';
 import { PanelSkeleton } from './components/core/layout/PanelSkeleton';
@@ -94,6 +95,7 @@ function App() {
           </Suspense>
         </ErrorBoundary>
       </div>
+      <OpsLogTicker />
     </FilterProvider>
   )
 }
