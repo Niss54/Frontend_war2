@@ -1,0 +1,222 @@
+.delay-leaderboard {
+  background: #0D0D14;
+  border: 1px solid #1E1E2E;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.delay-leaderboard-header {
+  border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.delay-leaderboard-title {
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+  color: #00FF88;
+  font-size: 14px;
+  margin: 0 0 4px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delay-leaderboard-subtitle {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10px;
+  color: #8b92a5;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 1px;
+}
+
+.leaderboard-pulse-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #00FF88;
+  border-radius: 50%;
+  animation: lb-pulse 2s infinite;
+}
+
+@keyframes lb-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+  70% { box-shadow: 0 0 0 4px rgba(0, 255, 136, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+}
+
+.delay-leaderboard-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.delay-leaderboard-item {
+  height: 44px;
+  background: #12121A;
+  border: 1px solid #1E1E2E;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 12px;
+  position: relative;
+  transition: background 0.2s, border-color 0.2s;
+  cursor: default;
+}
+
+.delay-leaderboard-item:hover {
+  background: #1A1A24;
+  border-color: #333;
+}
+
+.lb-rank {
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+  font-size: 14px;
+  width: 24px;
+}
+
+.lb-rank.green { color: #00FF88; }
+.lb-rank.amber { color: #FFB800; }
+.lb-rank.red { color: #FF3366; }
+
+.lb-flight-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lb-flight-id-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lb-flight-id {
+  font-family: "Courier New", Courier, monospace;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.lb-destination {
+  font-size: 10px;
+  color: #8b92a5;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.lb-boarding-badge {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 8px;
+  color: #FFB800;
+  border: 1px solid rgba(255, 184, 0, 0.4);
+  background: rgba(255, 184, 0, 0.1);
+  padding: 1px 4px;
+  border-radius: 3px;
+  animation: boarding-pulse 1.5s infinite alternate;
+}
+
+@keyframes boarding-pulse {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+.lb-score-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lb-progress-bg {
+  width: 100px;
+  height: 6px;
+  background: #1E1E2E;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.lb-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.lb-progress-fill.green { background: #00FF88; }
+.lb-progress-fill.amber { background: #FFB800; }
+.lb-progress-fill.red { background: #FF3366; }
+
+.lb-score-text {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  font-weight: bold;
+  width: 24px;
+  text-align: right;
+}
+.lb-score-text.green { color: #00FF88; }
+.lb-score-text.amber { color: #FFB800; }
+.lb-score-text.red { color: #FF3366; }
+
+/* Tooltip Styles */
+.lb-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  border: 1px solid #333;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 10px;
+  font-family: "Courier New", Courier, monospace;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+  transition: opacity 0.2s, visibility 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.delay-leaderboard-item:hover .lb-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.lb-tooltip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 12px;
+}
+
+.lb-tooltip-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lb-tooltip-label {
+  color: #8b92a5;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.lb-tooltip-value {
+  color: #FFB800;
+  font-weight: bold;
+}
