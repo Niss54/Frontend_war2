@@ -1,4 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { useAirportData } from './AirportContext';
+import { SimulationEngine } from '../engine/SimulationEngine';
+import { eventBus, SIMULATION_TICK, TickPayload } from '../utils/EventBus';
 
 interface SimulationContextValue {
   currentTime: Date;
@@ -19,32 +22,45 @@ const SimulationContext = createContext<SimulationContextValue>({
 });
 
 export function SimulationProvider({ children }: { children: React.ReactNode }) {
-  // Start simulation at a known active date from the dataset
+  const { store } = useAirportData();
+  const engine = useRef(SimulationEngine.getInstance());
+  
   const [currentTime, setCurrentTime] = useState(new Date('2024-11-11T06:00:00'));
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
+  
+  const [isEngineInitialized, setIsEngineInitialized] = useState(false);
 
+  // Initialize engine when store is loaded
   useEffect(() => {
-    if (!isPlaying) return;
+    if (store && !isEngineInitialized) {
+      engine.current.init(store);
+      setCurrentTime(engine.current.getCurrentTime());
+      setIsEngineInitialized(true);
+    }
+  }, [store, isEngineInitialized]);
 
-    let lastTick = performance.now();
-    let animationFrame: number;
-
-    const tick = (now: number) => {
-      const deltaMs = now - lastTick;
-      lastTick = now;
-
-      // Increment time by real time delta * speed
-      setCurrentTime(prev => new Date(prev.getTime() + deltaMs * speed));
-      animationFrame = requestAnimationFrame(tick);
+  // Listen to engine ticks
+  useEffect(() => {
+    const handleTick = (payload: TickPayload) => {
+      setCurrentTime(payload.currentTime);
     };
-
-    animationFrame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [isPlaying, speed]);
+    eventBus.on(SIMULATION_TICK, handleTick);
+    return () => eventBus.off(SIMULATION_TICK, handleTick);
+  }, []);
 
   const togglePlay = useCallback(() => {
-    setIsPlaying(prev => !prev);
+    setIsPlaying(prev => {
+      const next = !prev;
+      if (next) engine.current.play();
+      else engine.current.pause();
+      return next;
+    });
+  }, []);
+
+  const handleSetSpeed = useCallback((newSpeed: number) => {
+    setSpeed(newSpeed);
+    engine.current.setSpeed(newSpeed);
   }, []);
 
   const value = {
@@ -52,7 +68,7 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
     isPlaying,
     speed,
     togglePlay,
-    setSpeed,
+    setSpeed: handleSetSpeed,
     setTime: setCurrentTime,
   };
 
