@@ -5,7 +5,7 @@ import { useAirportData } from '../../context/AirportContext';
 import { useSimulation } from '../../context/SimulationContext';
 import { useFilter } from '../../context/FilterContext';
 import { FlightRow } from './FlightRow';
-import type { UnifiedFlight } from '../../types/unified';
+
 import { eventBus, FLIGHT_STATUS_CHANGED } from '../../utils/EventBus';
 import './FlightOpsBoard.css';
 
@@ -191,7 +191,7 @@ export const FlightOpsBoard: React.FC = () => {
                 itemSize={64} // Height of FlightRow + gap/padding (approx)
                 width="100%"
               >
-                {({ index, style }) => (
+                {({ index, style }: { index: number, style: React.CSSProperties }) => (
                   <div style={{ ...style, padding: '0 16px' }}>
                     <FlightRow 
                       flightData={departures[index]} 
@@ -232,7 +232,7 @@ export const FlightOpsBoard: React.FC = () => {
                 itemSize={64} // Height of FlightRow + gap/padding (approx)
                 width="100%"
               >
-                {({ index, style }) => (
+                {({ index, style }: { index: number, style: React.CSSProperties }) => (
                   <div style={{ ...style, padding: '0 16px' }}>
                     <FlightRow 
                       flightData={arrivals[index]} 
