@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Play, Pause, Plane, Grid, Luggage, Shield, Users, ShoppingBag } from 'lucide-react';
 import { useAirportData } from '../../context/AirportContext';
 import { useSimulation } from '../../context/SimulationContext';
@@ -36,6 +37,33 @@ const KPITile = ({
           {trend === 'up' ? '▲' : trend === 'down' ? '▼' : '▬'}
         </div>
       )}
+    </div>
+  );
+};
+
+const NAV_ITEMS = [
+  { to: '/flights', icon: Plane, label: 'FL' },
+  { to: '/gates', icon: Grid, label: 'GA' },
+  { to: '/baggage', icon: Luggage, label: 'BG' },
+  { to: '/security', icon: Shield, label: 'SC' },
+  { to: '/staff', icon: Users, label: 'ST' },
+  { to: '/retail', icon: ShoppingBag, label: 'RT' },
+];
+
+const NavLinks: React.FC = () => {
+  const location = useLocation();
+  return (
+    <div className="nav-links">
+      {NAV_ITEMS.map(item => (
+        <Link
+          key={item.to}
+          to={item.to}
+          className={`nav-btn ${location.pathname === item.to ? 'active' : ''}`}
+        >
+          <item.icon size={16} />
+          <span className="nav-label">{item.label}</span>
+        </Link>
+      ))}
     </div>
   );
 };
@@ -188,32 +216,7 @@ export const CommandHeader: React.FC = () => {
             </div>
           </div>
           
-          <div className="nav-links">
-            <a href="#flights" className="nav-btn active">
-              <Plane size={16} />
-              <span className="nav-label">FL</span>
-            </a>
-            <a href="#gates" className="nav-btn">
-              <Grid size={16} />
-              <span className="nav-label">GA</span>
-            </a>
-            <a href="#baggage" className="nav-btn">
-              <Luggage size={16} />
-              <span className="nav-label">BG</span>
-            </a>
-            <a href="#security" className="nav-btn">
-              <Shield size={16} />
-              <span className="nav-label">SC</span>
-            </a>
-            <a href="#staff" className="nav-btn">
-              <Users size={16} />
-              <span className="nav-label">ST</span>
-            </a>
-            <a href="#retail" className="nav-btn">
-              <ShoppingBag size={16} />
-              <span className="nav-label">RT</span>
-            </a>
-          </div>
+          <NavLinks />
         </div>
       </header>
 

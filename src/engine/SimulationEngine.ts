@@ -1,10 +1,11 @@
 import { 
   eventBus, 
   FLIGHT_STATUS_CHANGED, 
-  BAGGAGE_STATUS_UPDATE, 
   SECURITY_QUEUE_UPDATE, 
   INCIDENT_CREATED, 
-  SIMULATION_TICK,
+  SIMULATION_TICK
+} from '../utils/EventBus';
+import type {
   FlightStatusPayload,
   IncidentPayload
 } from '../utils/EventBus';
