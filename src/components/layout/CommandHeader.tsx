@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Play, Pause, Plane, Grid, Luggage, Shield, Users, ShoppingBag } from 'lucide-react';
+import { Play, Pause, Plane, Grid, Luggage, Shield, Users, ShoppingBag, Bell } from 'lucide-react';
 import { useAirportData } from '../../context/AirportContext';
 import { useSimulation } from '../../context/SimulationContext';
 import { getActiveFlights } from '../../utils/airportUtils';
 import { useCountUp } from '../../hooks/useCountUp';
+import { AlertPanel } from '../alerts/AlertPanel';
 import './CommandHeader.css';
 
 // Component for individual KPI Tile
@@ -47,7 +48,7 @@ const NAV_ITEMS = [
   { to: '/baggage', icon: Luggage, label: 'BG' },
   { to: '/security', icon: Shield, label: 'SC' },
   { to: '/staff', icon: Users, label: 'ST' },
-  { to: '/retail', icon: ShoppingBag, label: 'RT' },
+  { to: '/maintenance', icon: ShoppingBag, label: 'RT' },
 ];
 
 const NavLinks: React.FC = () => {
@@ -70,7 +71,9 @@ const NavLinks: React.FC = () => {
 
 export const CommandHeader: React.FC = () => {
   const { store, derivedData } = useAirportData();
-  const { currentTime, isPlaying, togglePlay, speed, setSpeed } = useSimulation();
+  const { currentTime, isPlaying, togglePlay, speed, setSpeed, alerts } = useSimulation();
+  
+  const [isAlertPanelOpen, setIsAlertPanelOpen] = useState(false);
   
   // Real-time live clock (Zone A)
   const [liveTime, setLiveTime] = useState(new Date());
@@ -78,6 +81,10 @@ export const CommandHeader: React.FC = () => {
     const timer = setInterval(() => setLiveTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const unacknowledgedAlerts = alerts.filter(a => !a.acknowledged);
+  const criticalAlertsCount = unacknowledgedAlerts.filter(a => a.severity === 'CRITICAL').length;
+  const hasCriticalAlerts = criticalAlertsCount > 0;
 
   // Compute KPIs dynamically based on simulation time
   const kpis = useMemo(() => {
@@ -113,9 +120,7 @@ export const CommandHeader: React.FC = () => {
       : 5; // Fallback
       
     // 6. Open Incidents
-    const activeAlerts = derivedData?.activeAlerts || [];
-    // Just count critical/high alerts for demo purposes as open incidents
-    const openIncidents = activeAlerts.filter(a => a.severity === 'CRITICAL' || a.severity === 'HIGH').length;
+    const openIncidents = unacknowledgedAlerts.length;
 
     return {
       totalFlights, deptCount, arrCount,
@@ -124,9 +129,9 @@ export const CommandHeader: React.FC = () => {
       paxInTerminal,
       avgSecurityWait,
       openIncidents,
-      recentAlerts: activeAlerts.slice(0, 3)
+      recentAlerts: unacknowledgedAlerts.slice(0, 3)
     };
-  }, [store, currentTime, derivedData]);
+  }, [store, currentTime, unacknowledgedAlerts]);
 
   // Color thresholds
   const getOnTimeColor = (pct: number) => {
@@ -140,8 +145,6 @@ export const CommandHeader: React.FC = () => {
     if (wait <= 20) return 'amber';
     return 'red';
   };
-
-  const hasCriticalAlerts = kpis?.openIncidents ? kpis.openIncidents > 0 : false;
 
   return (
     <>
@@ -216,7 +219,43 @@ export const CommandHeader: React.FC = () => {
             </div>
           </div>
           
-          <NavLinks />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <NavLinks />
+            <button 
+              className={`icon-btn alert-bell-btn ${hasCriticalAlerts ? 'has-critical' : unacknowledgedAlerts.length > 0 ? 'has-alerts' : ''}`}
+              onClick={() => setIsAlertPanelOpen(!isAlertPanelOpen)}
+              title="Operations Intelligence Alerts"
+              style={{
+                background: hasCriticalAlerts ? '#FF336620' : 'transparent',
+                border: hasCriticalAlerts ? '1px solid #FF3366' : '1px solid transparent',
+                borderRadius: '8px',
+                padding: '8px',
+                cursor: 'pointer',
+                color: hasCriticalAlerts ? '#FF3366' : '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+              }}
+            >
+              <Bell size={20} />
+              {unacknowledgedAlerts.length > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-5px',
+                  right: '-5px',
+                  background: '#FF3366',
+                  color: '#fff',
+                  fontSize: '10px',
+                  fontWeight: 'bold',
+                  padding: '2px 6px',
+                  borderRadius: '10px'
+                }}>
+                  {unacknowledgedAlerts.length}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -240,6 +279,8 @@ export const CommandHeader: React.FC = () => {
           <option value={100}>100x</option>
         </select>
       </div>
+      
+      <AlertPanel isOpen={isAlertPanelOpen} onClose={() => setIsAlertPanelOpen(false)} />
     </>
   );
 };
