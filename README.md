@@ -4,7 +4,7 @@
 ![Year](https://img.shields.io/badge/YEAR-2026-22c55e?style=flat-square)
 ![Track](https://img.shields.io/badge/TRACK-FRONTEND%20WARS-3b82f6?style=flat-square)
 ![Domain](https://img.shields.io/badge/DOMAIN-AIRPORT%20OPS-f59e0b?style=flat-square)
-![Team](https://img.shields.io/badge/TEAM-SYNTRIX-8b5cf6?style=flat-square)
+
 
 # ✈️ AeroCommand
 
