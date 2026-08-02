@@ -5,6 +5,7 @@ import { useAirportData } from '../../../context/AirportContext';
 import { useFlightFilter } from '../../../hooks/useFlightFilter';
 import { FlightRow } from './FlightRow';
 import { FlightDetailPanel } from './FlightDetailPanel';
+import { DelayRiskLeaderboard } from './DelayRiskLeaderboard';
 
 import { eventBus, FLIGHT_STATUS_CHANGED } from '../../../utils/EventBus';
 import './FlightOpsBoard.css';
@@ -17,6 +18,7 @@ interface Toast {
 export const FlightOpsBoard: React.FC = () => {
   const { flightIndex, isLoading, error } = useAirportData();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isMobileLeaderboardOpen, setIsMobileLeaderboardOpen] = useState(false);
   
   const {
     filteredFlights,
@@ -118,11 +120,27 @@ export const FlightOpsBoard: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Board Panels */}
-      <div className="board-panels">
-        
-        {/* Departures Panel (55%) */}
-        <div className="panel departures-panel">
+      <div className="leaderboard-mobile">
+        <button 
+          onClick={() => setIsMobileLeaderboardOpen(!isMobileLeaderboardOpen)}
+          style={{ width: '100%', background: 'transparent', border: '1px solid #1e1e2e', color: '#8b92a5', padding: '8px', cursor: 'pointer', fontFamily: 'Courier', borderRadius: '4px' }}
+        >
+          {isMobileLeaderboardOpen ? 'Hide Delay Risk Leaderboard' : 'Show Delay Risk Leaderboard'}
+        </button>
+        {isMobileLeaderboardOpen && (
+          <div style={{ height: '350px', marginTop: '16px' }}>
+            <DelayRiskLeaderboard />
+          </div>
+        )}
+      </div>
+
+      <div className="fob-layout">
+        <div className="fob-main-col">
+          {/* Main Board Panels */}
+          <div className="board-panels">
+            
+            {/* Departures Panel (50%) */}
+            <div className="panel departures-panel">
           <div className="panel-header departures">
             <h2>DEPARTURES</h2>
           </div>
@@ -203,6 +221,12 @@ export const FlightOpsBoard: React.FC = () => {
           </div>
         </div>
 
+        </div>
+        </div>
+
+        <div className="leaderboard-sidebar">
+          <DelayRiskLeaderboard />
+        </div>
       </div>
 
       {/* Detail Panel Drawer */}
