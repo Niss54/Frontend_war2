@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAirportData } from './context/AirportContext';
 import { FilterProvider } from './context/FilterContext';
 import { CommandHeader } from './components/core/layout/CommandHeader';
+import { CommandPalette } from './components/core/ui/CommandPalette';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { ErrorBoundary } from './components/core/layout/ErrorBoundary';
 import { PanelSkeleton } from './components/core/layout/PanelSkeleton';
@@ -42,6 +43,7 @@ function App() {
     <FilterProvider>
       <GlobalShortcuts />
       <CommandHeader />
+      <CommandPalette />
       <div className="app-content">
         <ErrorBoundary fallbackMessage="The routing module crashed.">
           <Suspense fallback={<PanelSkeleton />}>
