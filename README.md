@@ -19,7 +19,7 @@
 [![PapaParse](https://img.shields.io/badge/PapaParse-5.5-00C49F?style=flat-square)](https://www.papaparse.com/)
 [![Lucide React](https://img.shields.io/badge/Lucide%20React-1.28-F8C53A?style=flat-square)](https://lucide.dev)
 
-🚀 [Live Demo](#) · 📋 [Documentation](#) · 🐛 [Report Bug](https://github.com/Niss54/Frontend_war2/issues) · 💡 [Request Feature](https://github.com/Niss54/Frontend_war2/issues)
+🚀 [Live Demo](frontend-war2.vercel.app) · 📋 [Documentation](#) · 🐛 [Report Bug](https://github.com/Niss54/Frontend_war2/issues) · 💡 [Request Feature](https://github.com/Niss54/Frontend_war2/issues)
 
 </div>
 
