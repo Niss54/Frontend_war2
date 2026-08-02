@@ -10,11 +10,11 @@
 
 /* ZONE A */
 .zone-a {
-  width: 300px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
+  gap: 20px;
+  padding: 0 24px;
   border-right: 1px solid #1e1e2e;
 }
 
@@ -62,8 +62,9 @@
 
 .ops-status {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  gap: 12px;
 }
 
 .badge {
@@ -126,13 +127,14 @@
   justify-content: space-around;
   padding: 0 16px;
   border-right: 1px solid #1e1e2e;
+  overflow: hidden;
 }
 
 .kpi-tile {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 100px;
+  flex: 1;
 }
 
 .kpi-label {
@@ -190,11 +192,13 @@
 
 /* ZONE C */
 .zone-c {
-  width: 280px;
+  width: 550px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 8px;
+  padding: 8px 16px;
+  gap: 8px;
 }
 
 .ticker-container {
