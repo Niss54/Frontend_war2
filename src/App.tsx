@@ -1,20 +1,23 @@
+import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAirportData } from './context/AirportContext';
 import { FilterProvider } from './context/FilterContext';
 import { CommandHeader } from './components/layout/CommandHeader';
-import { FlightOpsBoard } from './components/flights/FlightOpsBoard';
-import { GatePanel } from './components/gates/GatePanel';
-import { PaxBagOperations } from './components/paxbag/PaxBagOperations';
-import { OpsSupport } from './components/ops/OpsSupport';
-import { RetailPanel } from './components/retail/RetailPanel';
-import { FlightDetailPanel } from './components/flights/FlightDetailPanel';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { ErrorBoundary } from './components/layout/ErrorBoundary';
+import { PanelSkeleton } from './components/layout/PanelSkeleton';
 import './App.css';
+
+// Lazy load all major panels
+const FlightOpsBoard = React.lazy(() => import('./components/flights/FlightOpsBoard').then(m => ({ default: m.FlightOpsBoard })));
+const GatePanel = React.lazy(() => import('./components/gates/GatePanel').then(m => ({ default: m.GatePanel })));
+const PaxBagOperations = React.lazy(() => import('./components/paxbag/PaxBagOperations').then(m => ({ default: m.PaxBagOperations })));
+const OpsSupport = React.lazy(() => import('./components/ops/OpsSupport').then(m => ({ default: m.OpsSupport })));
+const RetailPanel = React.lazy(() => import('./components/retail/RetailPanel').then(m => ({ default: m.RetailPanel })));
+const FlightDetailPanel = React.lazy(() => import('./components/flights/FlightDetailPanel').then(m => ({ default: m.FlightDetailPanel })));
 
 // A small component to initialize the global keyboard shortcuts
 const GlobalShortcuts: React.FC = () => {
-  // Pass a dummy function for toggleAlertPanel since it's controlled locally in CommandHeader for now.
-  // Ideally, CommandHeader state would move to context, but we will just simulate a click on the bell.
   useKeyboardShortcuts(() => {
     const btn = document.querySelector('.alert-bell-btn') as HTMLButtonElement;
     if (btn) btn.click();
@@ -23,9 +26,20 @@ const GlobalShortcuts: React.FC = () => {
 };
 
 function App() {
-  const { store, derivedData, isLoading, error } = useAirportData();
+  const { store, derivedData, isLoading, error, loadProgress } = useAirportData();
 
-  if (isLoading) return <div className="loading">Loading 8 datasets (PapaParse parallel)...</div>;
+  if (isLoading) {
+    return (
+      <div className="loading" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', gap: '20px' }}>
+        <div style={{ fontSize: '24px', fontWeight: 'bold' }}>INITIALIZING ENGINE</div>
+        <div style={{ width: '300px', height: '10px', background: '#1e1e2e', borderRadius: '5px', overflow: 'hidden' }}>
+          <div style={{ width: `${loadProgress}%`, height: '100%', background: '#4A9EFF', transition: 'width 0.3s ease' }}></div>
+        </div>
+        <div style={{ fontSize: '14px', color: '#8b92a5' }}>Loading 8 datasets (PapaParse parallel)... {loadProgress}%</div>
+      </div>
+    );
+  }
+  
   if (error) return <div className="error">Error loading data: {error}</div>;
   if (!store || !derivedData) return <div className="error">No data loaded</div>;
 
@@ -33,20 +47,59 @@ function App() {
     <FilterProvider>
       <GlobalShortcuts />
       <CommandHeader />
-      <Routes>
-        <Route path="/" element={<Navigate to="/flights" replace />} />
-        <Route path="/flights" element={<FlightOpsBoard />} />
-        <Route path="/gates" element={<GatePanel />} />
-        <Route path="/baggage" element={<PaxBagOperations defaultTab="baggage" />} />
-        <Route path="/passengers" element={<PaxBagOperations defaultTab="passengers" />} />
-        <Route path="/security" element={<OpsSupport defaultTab="security" />} />
-        <Route path="/staff" element={<OpsSupport defaultTab="staff" />} />
-        <Route path="/maintenance" element={<OpsSupport defaultTab="maintenance" />} />
-        <Route path="/retail" element={<RetailPanel />} />
-        {/* Future routes will be added here */}
-        <Route path="*" element={<div style={{padding: '20px', color: '#fff'}}>Module in development</div>} />
-      </Routes>
-      <FlightDetailPanel />
+      <div className="app-content">
+        <ErrorBoundary fallbackMessage="The routing module crashed.">
+          <Suspense fallback={<PanelSkeleton />}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/flights" replace />} />
+              <Route path="/flights" element={
+                <ErrorBoundary fallbackMessage="Flight Ops Board is temporarily unavailable.">
+                  <FlightOpsBoard />
+                </ErrorBoundary>
+              } />
+              <Route path="/gates" element={
+                <ErrorBoundary fallbackMessage="Gate Management is temporarily unavailable.">
+                  <GatePanel />
+                </ErrorBoundary>
+              } />
+              <Route path="/baggage" element={
+                <ErrorBoundary fallbackMessage="Baggage Operations is temporarily unavailable.">
+                  <PaxBagOperations defaultTab="baggage" />
+                </ErrorBoundary>
+              } />
+              <Route path="/passengers" element={
+                <ErrorBoundary fallbackMessage="Passenger Flow is temporarily unavailable.">
+                  <PaxBagOperations defaultTab="passengers" />
+                </ErrorBoundary>
+              } />
+              <Route path="/security" element={
+                <ErrorBoundary fallbackMessage="Security View is temporarily unavailable.">
+                  <OpsSupport defaultTab="security" />
+                </ErrorBoundary>
+              } />
+              <Route path="/staff" element={
+                <ErrorBoundary fallbackMessage="Staff View is temporarily unavailable.">
+                  <OpsSupport defaultTab="staff" />
+                </ErrorBoundary>
+              } />
+              <Route path="/maintenance" element={
+                <ErrorBoundary fallbackMessage="Maintenance View is temporarily unavailable.">
+                  <OpsSupport defaultTab="maintenance" />
+                </ErrorBoundary>
+              } />
+              <Route path="/retail" element={
+                <ErrorBoundary fallbackMessage="Retail Analytics is temporarily unavailable.">
+                  <RetailPanel />
+                </ErrorBoundary>
+              } />
+              <Route path="*" element={<div style={{padding: '20px', color: '#fff'}}>Module in development</div>} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
+      </div>
+      <Suspense fallback={null}>
+        <FlightDetailPanel />
+      </Suspense>
     </FilterProvider>
   )
 }

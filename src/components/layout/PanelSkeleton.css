@@ -1,0 +1,52 @@
+.skeleton-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  height: 100%;
+  width: 100%;
+}
+
+.skeleton-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.skeleton-title {
+  width: 200px;
+  height: 32px;
+  background: #1e1e2e;
+  border-radius: 4px;
+}
+
+.skeleton-controls {
+  width: 120px;
+  height: 32px;
+  background: #1e1e2e;
+  border-radius: 4px;
+}
+
+.skeleton-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-row {
+  width: 100%;
+  height: 48px;
+  background: #1a1a24;
+  border-radius: 8px;
+}
+
+.pulse {
+  animation: pulse-animation 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-animation {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}

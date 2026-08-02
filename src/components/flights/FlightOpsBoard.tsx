@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { FixedSizeList as List } from 'react-window';
 import { useAirportData } from '../../context/AirportContext';
 import { useSimulation } from '../../context/SimulationContext';
 import { useFilter } from '../../context/FilterContext';
 import { FlightRow } from './FlightRow';
+import type { UnifiedFlight } from '../../types/unified';
 import { eventBus, FLIGHT_STATUS_CHANGED } from '../../utils/EventBus';
 import './FlightOpsBoard.css';
 
@@ -179,16 +181,27 @@ export const FlightOpsBoard: React.FC = () => {
             <div className="fr-status-col">STATUS</div>
             <div className="fr-risk-col">RSK</div>
           </div>
-          <div className="panel-content">
-            {departures.map(uf => (
-              <FlightRow 
-                key={uf.flight.flight_id} 
-                flightData={uf} 
-                type="DEPARTURE" 
-                onClick={handleRowClick} 
-              />
-            ))}
-            {departures.length === 0 && <div className="no-flights">No departures match filters</div>}
+          <div className="panel-content" style={{ padding: 0 }}>
+            {departures.length === 0 ? (
+              <div className="no-flights">No departures match filters</div>
+            ) : (
+              <List
+                height={window.innerHeight - 300} // Approximate available height
+                itemCount={departures.length}
+                itemSize={64} // Height of FlightRow + gap/padding (approx)
+                width="100%"
+              >
+                {({ index, style }) => (
+                  <div style={{ ...style, padding: '0 16px' }}>
+                    <FlightRow 
+                      flightData={departures[index]} 
+                      type="DEPARTURE" 
+                      onClick={handleRowClick} 
+                    />
+                  </div>
+                )}
+              </List>
+            )}
           </div>
         </div>
 
@@ -209,16 +222,27 @@ export const FlightOpsBoard: React.FC = () => {
             <div className="fr-status-col">STATUS</div>
             <div className="fr-risk-col">RSK</div>
           </div>
-          <div className="panel-content">
-            {arrivals.map(uf => (
-              <FlightRow 
-                key={uf.flight.flight_id} 
-                flightData={uf} 
-                type="ARRIVAL" 
-                onClick={handleRowClick} 
-              />
-            ))}
-            {arrivals.length === 0 && <div className="no-flights">No arrivals match filters</div>}
+          <div className="panel-content" style={{ padding: 0 }}>
+            {arrivals.length === 0 ? (
+              <div className="no-flights">No arrivals match filters</div>
+            ) : (
+              <List
+                height={window.innerHeight - 300} // Approximate available height
+                itemCount={arrivals.length}
+                itemSize={64} // Height of FlightRow + gap/padding (approx)
+                width="100%"
+              >
+                {({ index, style }) => (
+                  <div style={{ ...style, padding: '0 16px' }}>
+                    <FlightRow 
+                      flightData={arrivals[index]} 
+                      type="ARRIVAL" 
+                      onClick={handleRowClick} 
+                    />
+                  </div>
+                )}
+              </List>
+            )}
           </div>
         </div>
 

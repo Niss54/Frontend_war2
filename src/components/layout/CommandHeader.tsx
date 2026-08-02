@@ -10,7 +10,7 @@ import { AlertPanel } from '../alerts/AlertPanel';
 import './CommandHeader.css';
 
 // Component for individual KPI Tile
-const KPITile = ({ 
+const KPITileComponent = ({ 
   label, 
   value, 
   subtext,
@@ -42,6 +42,8 @@ const KPITile = ({
     </div>
   );
 };
+
+const KPITile = React.memo(KPITileComponent);
 
 const NAV_ITEMS = [
   { to: '/flights', icon: Plane, label: 'FL' },
