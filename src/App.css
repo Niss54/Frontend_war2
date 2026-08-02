@@ -1,6 +1,7 @@
 .app-content {
   flex: 1;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
+  position: relative;
+  background-color: #050508;
+  padding-bottom: 44px; /* Space for OpsLogTicker */
 }
