@@ -261,7 +261,6 @@ npm run preview
 | `4` | Navigate → Security |
 | `5` | Navigate → Staff |
 | `6` | Navigate → Retail |
-| `A` | Open / close Alert Panel |
 | `ESC` | Close any open panel or drilldown |
 | `F` | Focus flight search |
 

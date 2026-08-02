@@ -28,6 +28,46 @@ export const FlightDetailPanel: React.FC<FlightDetailPanelProps> = ({ flightId }
     });
   }, [uf, store, currentTime]);
 
+  const retailData = useMemo(() => {
+    if (!uf || !store) return { total: 0, count: 0, topCategory: '—', topStore: '—', dutyFreeRevenue: 0 };
+    const filtered = store.retailTransactions.filter(r => 
+      r.terminal === uf.flight.terminal && 
+      Math.abs(new Date(r.timestamp).getTime() - currentTime.getTime()) <= 2 * 60 * 60 * 1000
+    );
+    
+    if (filtered.length === 0) {
+      return { total: 0, count: 0, topCategory: '—', topStore: '—', dutyFreeRevenue: 0 };
+    }
+    
+    let total = 0;
+    let dutyFreeRevenue = 0;
+    const catMap: Record<string, number> = {};
+    const storeMap: Record<string, number> = {};
+    
+    filtered.forEach(r => {
+      const amt = Number(r.amount) || 0;
+      total += amt;
+      if (r.is_duty_free) dutyFreeRevenue += amt;
+      
+      catMap[r.product_category] = (catMap[r.product_category] || 0) + amt;
+      storeMap[r.store_name] = (storeMap[r.store_name] || 0) + amt;
+    });
+    
+    let topCategory = '—';
+    let maxCat = 0;
+    for (const [c, v] of Object.entries(catMap)) {
+      if (v > maxCat) { maxCat = v; topCategory = c; }
+    }
+    
+    let topStore = '—';
+    let maxStore = 0;
+    for (const [s, v] of Object.entries(storeMap)) {
+      if (v > maxStore) { maxStore = v; topStore = s; }
+    }
+    
+    return { total, count: filtered.length, topCategory, topStore, dutyFreeRevenue };
+  }, [uf, store, currentTime]);
+
   if (!uf) return null;
 
   const f = uf.flight;
@@ -292,6 +332,54 @@ export const FlightDetailPanel: React.FC<FlightDetailPanelProps> = ({ flightId }
                     </div>
                   ))}
                 </div>
+              )}
+            </div>
+          </div>
+
+          {/* NEW SECTION - RETAIL INTELLIGENCE */}
+          <div className="fdp-section">
+            <div className="fdp-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>TERMINAL RETAIL INTELLIGENCE</span>
+              <span style={{ color: '#8b92a5', fontSize: '10px' }}>LIVE · 2H WINDOW</span>
+            </div>
+            <div className="fdp-section-content" style={{ background: '#0a0a12', border: '1px solid #00FF8820', borderRadius: '4px', padding: '12px' }}>
+              {retailData.count === 0 ? (
+                <div style={{ color: '#8b92a5', fontSize: '12px', textAlign: 'center', padding: '8px 0' }}>
+                  No retail activity in {f.terminal} in current window
+                </div>
+              ) : (
+                <>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid #1e1e2e' }}>
+                    <div>
+                      <div style={{ color: '#8b92a5', fontSize: '10px', textTransform: 'uppercase', marginBottom: '4px' }}>Total Revenue</div>
+                      <div style={{ color: '#00FF88', fontFamily: '"Courier New", Courier, monospace', fontSize: '20px', fontWeight: 'bold' }}>
+                        ₹{retailData.total >= 1000 ? (retailData.total / 1000).toFixed(1) + 'K' : retailData.total.toFixed(0)}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ color: '#8b92a5', fontSize: '10px', textTransform: 'uppercase', marginBottom: '4px' }}>Transactions</div>
+                      <div style={{ color: '#4A9EFF', fontFamily: '"Courier New", Courier, monospace', fontSize: '20px', fontWeight: 'bold' }}>
+                        {retailData.count}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#8b92a5' }}>Top Category:</span>
+                      <span style={{ color: '#FFB300', fontFamily: '"Courier New", Courier, monospace' }}>{retailData.topCategory}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#8b92a5' }}>Top Store:</span>
+                      <span style={{ color: '#fff' }}>{retailData.topStore}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#8b92a5' }}>Duty-Free:</span>
+                      <span style={{ color: retailData.dutyFreeRevenue > 0 ? '#00FF88' : '#8b92a5', fontFamily: '"Courier New", Courier, monospace' }}>
+                        ₹{retailData.dutyFreeRevenue >= 1000 ? (retailData.dutyFreeRevenue / 1000).toFixed(1) + 'K' : retailData.dutyFreeRevenue.toFixed(0)}
+                      </span>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           </div>
