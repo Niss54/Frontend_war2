@@ -1,0 +1,186 @@
+/* ===== Maintenance Panel ===== */
+.maintenance-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px;
+  gap: 24px;
+  overflow: hidden;
+}
+
+/* ===== Stats Strip ===== */
+.maint-stats {
+  display: flex;
+  gap: 16px;
+}
+
+.maint-stat-box {
+  flex: 1;
+  background: #0d0d14;
+  border: 1px solid #1e1e2e;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.maint-stat-val {
+  font-size: 28px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.maint-stat-val.critical { color: #FF3366; }
+.maint-stat-val.resolved { color: #00FF88; }
+
+.maint-stat-label {
+  font-size: 11px;
+  color: #8b92a5;
+  text-transform: uppercase;
+}
+
+/* ===== Kanban Board ===== */
+.kanban-board {
+  display: flex;
+  gap: 24px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.kanban-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #0d0d14;
+  border: 1px solid #1e1e2e;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.kanban-col-header {
+  padding: 16px;
+  border-bottom: 1px solid #1e1e2e;
+  background: #12121a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kanban-col-header h3 {
+  margin: 0;
+  font-size: 14px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.kanban-count {
+  background: #1e1e2e;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #8b92a5;
+  font-weight: bold;
+}
+
+.kanban-col-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Kanban Cards */
+.kanban-card {
+  background: #1a1a24;
+  border: 1px solid #333;
+  border-left: 4px solid #333;
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.kanban-card:hover {
+  border-color: #555;
+  transform: translateY(-2px);
+}
+
+.kanban-card.sev-1 { border-left-color: #8b92a5; } /* Low */
+.kanban-card.sev-2 { border-left-color: #4A9EFF; } /* Medium */
+.kanban-card.sev-3 { border-left-color: #FFB800; } /* High */
+.kanban-card.sev-4 { /* Critical */
+  border-left-color: #FF3366;
+  border-top-color: rgba(255, 51, 102, 0.5);
+  border-right-color: rgba(255, 51, 102, 0.5);
+  border-bottom-color: rgba(255, 51, 102, 0.5);
+  background: rgba(255, 51, 102, 0.05);
+  animation: pulse-card-border 2s infinite;
+}
+
+@keyframes pulse-card-border {
+  0% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(255, 51, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0); }
+}
+
+.k-card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.k-asset {
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.k-type {
+  font-size: 10px;
+  color: #8b92a5;
+  background: #12121a;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.k-desc {
+  font-size: 13px;
+  color: #ccc;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.k-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.k-assignee {
+  font-size: 11px;
+  color: #8b92a5;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.flight-impact-badge {
+  background: rgba(255, 184, 0, 0.15);
+  color: #FFB800;
+  border: 1px solid rgba(255, 184, 0, 0.5);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.flight-impact-badge:hover {
+  background: rgba(255, 184, 0, 0.3);
+}
