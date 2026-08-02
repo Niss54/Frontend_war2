@@ -14,14 +14,9 @@ const GatePanel = React.lazy(() => import('./components/modules/gates/GatePanel'
 const PaxBagOperations = React.lazy(() => import('./components/modules/paxbag/PaxBagOperations').then(m => ({ default: m.PaxBagOperations })));
 const OpsSupport = React.lazy(() => import('./components/modules/ops/OpsSupport').then(m => ({ default: m.OpsSupport })));
 const RetailPanel = React.lazy(() => import('./components/modules/retail/RetailPanel').then(m => ({ default: m.RetailPanel })));
-const FlightDetailPanel = React.lazy(() => import('./components/modules/flights/FlightDetailPanel').then(m => ({ default: m.FlightDetailPanel })));
 
-// A small component to initialize the global keyboard shortcuts
 const GlobalShortcuts: React.FC = () => {
-  useKeyboardShortcuts(() => {
-    const btn = document.querySelector('.alert-bell-btn') as HTMLButtonElement;
-    if (btn) btn.click();
-  });
+  useKeyboardShortcuts();
   return null;
 };
 
@@ -97,9 +92,6 @@ function App() {
           </Suspense>
         </ErrorBoundary>
       </div>
-      <Suspense fallback={null}>
-        <FlightDetailPanel />
-      </Suspense>
     </FilterProvider>
   )
 }

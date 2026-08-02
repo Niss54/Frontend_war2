@@ -74,7 +74,9 @@
 /* Throughput arrows (bags/min) */
 .throughput-badge {
   position: absolute;
-  top: -24px;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
   background: #050508;
   border: 1px solid #333;
   color: #00FF88;

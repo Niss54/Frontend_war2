@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import { useAirportData } from '../../../context/AirportContext';
-import { useSimulation } from '../../../context/SimulationContext';
-import { useFilter } from '../../../context/FilterContext';
+import { useFlightFilter } from '../../../hooks/useFlightFilter';
 import { FlightRow } from './FlightRow';
+import { FlightDetailPanel } from './FlightDetailPanel';
 
 import { eventBus, FLIGHT_STATUS_CHANGED } from '../../../utils/EventBus';
 import './FlightOpsBoard.css';
@@ -16,20 +16,27 @@ interface Toast {
 
 export const FlightOpsBoard: React.FC = () => {
   const { flightIndex, isLoading, error } = useAirportData();
-  const { currentTime } = useSimulation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const filterContext = useFilter();
+  
+  const {
+    filteredFlights,
+    searchQuery,
+    statusFilter,
+    terminalFilter,
+    airlineFilter,
+    setSearchQuery,
+    setStatus,
+    setTerminal,
+    setAirline,
+    setSelectedFlight,
+    selectedFlightId,
+    isDetailPanelOpen
+  } = useFlightFilter();
 
   const [toasts, setToasts] = useState<Toast[]>([]);
   let toastIdCounter = useRef(0);
 
-  // Search & Filter state from global context
-  const searchQuery = filterContext.searchQuery;
-  const filterStatus = filterContext.statusFilter || 'ALL';
-  const filterTerminal = filterContext.selectedTerminal || 'ALL';
-  const filterAirline = filterContext.selectedAirline || 'ALL';
-  
-  // Local sort state
+  // Local sort state (could also be in useFlightFilter, but keeping here for UI bindings)
   const sortBy = searchParams.get('sort') || 'time';
 
   // Available options
@@ -53,58 +60,8 @@ export const FlightOpsBoard: React.FC = () => {
     return () => eventBus.off(FLIGHT_STATUS_CHANGED, handleStatusChange);
   }, []);
 
-  // Process flights (Filter & Sort)
-  const processedFlights = useMemo(() => {
-    let filtered = allFlights;
-    const todayStr = currentTime.toISOString().split('T')[0];
-
-    // Filter to today
-    filtered = filtered.filter(f => 
-      f.flight.scheduled_departure?.startsWith(todayStr) || 
-      f.flight.scheduled_arrival?.startsWith(todayStr)
-    );
-
-    // Apply URL Filters
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(f => 
-        f.flight.flight_id.toLowerCase().includes(q) ||
-        f.flight.destination.toLowerCase().includes(q) ||
-        f.flight.origin.toLowerCase().includes(q) ||
-        f.flight.airline.toLowerCase().includes(q)
-      );
-    }
-    if (filterStatus !== 'ALL') {
-      filtered = filtered.filter(f => f.flight.status === filterStatus);
-    }
-    if (filterTerminal !== 'ALL') {
-      filtered = filtered.filter(f => f.flight.terminal === filterTerminal);
-    }
-    if (filterAirline !== 'ALL') {
-      filtered = filtered.filter(f => f.flight.airline_code === filterAirline);
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
-      if (sortBy === 'time') {
-        const timeA = new Date(a.flight.scheduled_departure || a.flight.scheduled_arrival).getTime();
-        const timeB = new Date(b.flight.scheduled_departure || b.flight.scheduled_arrival).getTime();
-        return timeA - timeB;
-      }
-      if (sortBy === 'status') return (a.flight.status || '').localeCompare(b.flight.status || '');
-      if (sortBy === 'gate') return (a.flight.gate || '').localeCompare(b.flight.gate || '');
-      return 0;
-    });
-
-    return filtered;
-  }, [allFlights, searchQuery, filterStatus, filterTerminal, filterAirline, sortBy, currentTime]);
-
-  const departures = processedFlights.filter(f => !!f.flight.scheduled_departure && f.flight.origin === 'DEL');
-  const arrivals = processedFlights.filter(f => !!f.flight.scheduled_arrival && f.flight.destination === 'DEL');
-
-  const handleRowClick = (flightId: string) => {
-    filterContext.setSelectedFlight(flightId);
-  };
+  const departures = filteredFlights.filter(f => !!f.flight.scheduled_departure && f.flight.origin === 'DEL');
+  const arrivals = filteredFlights.filter(f => !!f.flight.scheduled_arrival && f.flight.destination === 'DEL');
 
   const updateSortParam = (val: string) => {
     const newParams = new URLSearchParams(searchParams);
@@ -125,7 +82,7 @@ export const FlightOpsBoard: React.FC = () => {
             type="text" 
             placeholder="Search flight, dest, airline..." 
             value={searchQuery}
-            onChange={(e) => filterContext.setSearchQuery(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
           />
         </div>
@@ -133,19 +90,19 @@ export const FlightOpsBoard: React.FC = () => {
         <div className="filter-middle">
           <div className="filter-group">
             <span className="filter-label">Status</span>
-            <select value={filterStatus} onChange={(e) => filterContext.setStatus(e.target.value === 'ALL' ? null : e.target.value)}>
+            <select value={statusFilter} onChange={(e) => setStatus(e.target.value === 'ALL' ? null : e.target.value)}>
               {statuses.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
           <div className="filter-group">
             <span className="filter-label">Terminal</span>
-            <select value={filterTerminal} onChange={(e) => filterContext.setTerminal(e.target.value === 'ALL' ? null : e.target.value)}>
+            <select value={terminalFilter} onChange={(e) => setTerminal(e.target.value === 'ALL' ? null : e.target.value)}>
               {terminals.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
           <div className="filter-group">
             <span className="filter-label">Airline</span>
-            <select value={filterAirline} onChange={(e) => filterContext.setAirline(e.target.value === 'ALL' ? null : e.target.value)}>
+            <select value={airlineFilter} onChange={(e) => setAirline(e.target.value === 'ALL' ? null : e.target.value)}>
               {airlines.map(a => <option key={a} value={a}>{a}</option>)}
             </select>
           </div>
@@ -196,7 +153,7 @@ export const FlightOpsBoard: React.FC = () => {
                     <FlightRow 
                       flightData={departures[index]} 
                       type="DEPARTURE" 
-                      onClick={handleRowClick} 
+                      onClick={setSelectedFlight} 
                     />
                   </div>
                 )}
@@ -237,7 +194,7 @@ export const FlightOpsBoard: React.FC = () => {
                     <FlightRow 
                       flightData={arrivals[index]} 
                       type="ARRIVAL" 
-                      onClick={handleRowClick} 
+                      onClick={setSelectedFlight} 
                     />
                   </div>
                 )}
@@ -247,6 +204,11 @@ export const FlightOpsBoard: React.FC = () => {
         </div>
 
       </div>
+
+      {/* Detail Panel Drawer */}
+      {isDetailPanelOpen && selectedFlightId && (
+        <FlightDetailPanel flightId={selectedFlightId} />
+      )}
 
       {/* Toast Notifications */}
       <div className="toast-container">

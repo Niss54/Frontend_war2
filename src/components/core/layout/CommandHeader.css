@@ -265,19 +265,20 @@
   font-weight: bold;
 }
 
-/* Simulation Controls */
 .sim-controls {
-  position: absolute;
-  top: 85px;
-  right: 16px;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #050508;
+  background: rgba(5, 5, 8, 0.9);
+  backdrop-filter: blur(8px);
   border: 1px solid #1e1e2e;
-  padding: 6px 12px;
-  border-radius: 6px;
-  z-index: 100;
+  padding: 8px 16px;
+  border-radius: 20px;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
 .sim-time {
@@ -311,6 +312,12 @@
   padding: 2px 6px;
   border-radius: 4px;
   cursor: pointer;
+  outline: none;
+}
+
+.sim-speed option {
+  background-color: #1a1a24;
+  color: #fff;
 }
 
 .sim-speed:hover {
