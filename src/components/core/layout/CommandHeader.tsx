@@ -225,25 +225,38 @@ export const CommandHeader: React.FC = () => {
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {/* Global Search Bar */}
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <Search size={14} style={{ position: 'absolute', left: '8px', color: '#8b92a5' }} />
-              <input 
-                id="global-search"
-                type="text" 
-                placeholder="Search flight, origin... (Press F)" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  background: '#12121a',
-                  border: '1px solid #1e1e2e',
-                  color: '#fff',
-                  padding: '4px 8px 4px 28px',
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  width: '180px',
-                  outline: 'none'
-                }}
-              />
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <Search size={14} style={{ position: 'absolute', left: '8px', color: '#8b92a5' }} />
+                <input 
+                  id="global-search"
+                  type="text" 
+                  placeholder="Search flight, origin... (Press F)" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    background: '#12121a',
+                    border: '1px solid #1e1e2e',
+                    color: '#fff',
+                    padding: '4px 8px 4px 28px',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    width: '180px',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+              <div style={{
+                fontFamily: '"Courier New", Courier, monospace',
+                fontSize: '11px',
+                border: '1px solid #00FF8840',
+                padding: '2px 6px',
+                borderRadius: '4px',
+                color: '#00FF8860',
+                cursor: 'pointer'
+              }}>
+                CMD+K
+              </div>
             </div>
             
             <NavLinks />
