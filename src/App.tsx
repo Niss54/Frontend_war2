@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAirportData } from './context/AirportContext';
 import { CommandHeader } from './components/layout/CommandHeader';
 import { FlightOpsBoard } from './components/flights/FlightOpsBoard';
+import { GatePanel } from './components/gates/GatePanel';
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/flights" replace />} />
         <Route path="/flights" element={<FlightOpsBoard />} />
+        <Route path="/gates" element={<GatePanel />} />
         {/* Future routes will be added here */}
         <Route path="*" element={<div style={{padding: '20px', color: '#fff'}}>Module in development</div>} />
       </Routes>
