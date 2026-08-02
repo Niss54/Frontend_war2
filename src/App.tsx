@@ -4,6 +4,7 @@ import { CommandHeader } from './components/layout/CommandHeader';
 import { FlightOpsBoard } from './components/flights/FlightOpsBoard';
 import { GatePanel } from './components/gates/GatePanel';
 import { PaxBagOperations } from './components/paxbag/PaxBagOperations';
+import { OpsSupport } from './components/ops/OpsSupport';
 import './App.css';
 
 function App() {
@@ -22,6 +23,10 @@ function App() {
         <Route path="/gates" element={<GatePanel />} />
         <Route path="/baggage" element={<PaxBagOperations defaultTab="baggage" />} />
         <Route path="/passengers" element={<PaxBagOperations defaultTab="passengers" />} />
+        <Route path="/security" element={<OpsSupport defaultTab="security" />} />
+        <Route path="/staff" element={<OpsSupport defaultTab="staff" />} />
+        <Route path="/maintenance" element={<OpsSupport defaultTab="maintenance" />} />
+        <Route path="/retail" element={<OpsSupport defaultTab="maintenance" />} /> {/* Alias retail to maintenance for now as requested */}
         {/* Future routes will be added here */}
         <Route path="*" element={<div style={{padding: '20px', color: '#fff'}}>Module in development</div>} />
       </Routes>

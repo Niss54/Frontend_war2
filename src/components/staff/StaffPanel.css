@@ -1,0 +1,188 @@
+/* ===== Staff Panel ===== */
+.staff-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+/* ===== Gantt Chart ===== */
+.staff-gantt {
+  background: #0d0d14;
+  border: 1px solid #1e1e2e;
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.staff-gantt h3 {
+  margin: 0 0 16px 0;
+  color: #fff;
+}
+
+.gantt-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex: 1;
+}
+
+.gantt-header {
+  display: flex;
+  margin-left: 120px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.gantt-hour {
+  flex: 1;
+  font-size: 10px;
+  color: #8b92a5;
+  text-align: center;
+}
+
+.gantt-row {
+  display: flex;
+  height: 48px;
+  align-items: center;
+  position: relative;
+  border-bottom: 1px solid #1e1e2e;
+}
+
+.gantt-dept-label {
+  width: 120px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.gantt-track {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  background: #0a0a10;
+}
+
+/* Hourly grid lines */
+.gantt-grid-lines {
+  position: absolute;
+  top: 0;
+  left: 120px;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gantt-grid-line {
+  flex: 1;
+  border-left: 1px dashed #1e1e2e;
+}
+
+/* Shift blocks */
+.shift-block {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  border-radius: 4px;
+  opacity: 0.7;
+  z-index: 1;
+  transition: opacity 0.2s;
+}
+
+.shift-block:hover {
+  opacity: 1;
+  z-index: 3;
+}
+
+/* Min coverage line overlay per row is tricky to do purely in CSS over multiple blocks, 
+   so we'll simulate gap hatching as separate blocks on top */
+.gap-block {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 51, 102, 0.1),
+    rgba(255, 51, 102, 0.1) 10px,
+    rgba(255, 51, 102, 0.2) 10px,
+    rgba(255, 51, 102, 0.2) 20px
+  );
+  border-bottom: 2px dashed #FF3366;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Current Time Line */
+.current-time-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #00FF88;
+  z-index: 5;
+  box-shadow: 0 0 8px #00FF88;
+  transition: left 1s linear;
+}
+
+/* ===== Staff Table ===== */
+.staff-summary {
+  background: #0d0d14;
+  border: 1px solid #1e1e2e;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.staff-summary h3 {
+  margin: 0 0 16px 0;
+  color: #fff;
+}
+
+.staff-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.staff-table th {
+  text-align: left;
+  padding: 12px;
+  color: #8b92a5;
+  font-size: 11px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #333;
+}
+
+.staff-table td {
+  padding: 12px;
+  border-bottom: 1px solid #1e1e2e;
+  font-size: 14px;
+  color: #fff;
+}
+
+.staff-table tr:hover td {
+  background: #12121a;
+}
+
+.alert-badge {
+  background: rgba(255, 51, 102, 0.1);
+  color: #FF3366;
+  border: 1px solid #FF3366;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  animation: pulse-alert 2s infinite;
+}
+
+@keyframes pulse-alert {
+  0% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(255, 51, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0); }
+}
