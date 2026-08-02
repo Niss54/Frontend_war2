@@ -187,7 +187,6 @@ export const CommandHeader: React.FC = () => {
                 padding: '4px 8px',
                 borderRadius: '4px',
                 cursor: 'pointer',
-                marginLeft: '8px',
                 transition: 'all 0.2s'
               }}
               onMouseOver={(e) => {
