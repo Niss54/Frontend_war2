@@ -1,0 +1,45 @@
+.ops-support-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 80px);
+  background-color: #050508;
+  color: #fff;
+  overflow: hidden;
+}
+
+.ops-tabs {
+  display: flex;
+  gap: 16px;
+  padding: 16px 24px 0 24px;
+  background: #0a0a10;
+  border-bottom: 1px solid #1e1e2e;
+}
+
+.ops-tab {
+  padding: 12px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #8b92a5;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ops-tab:hover {
+  color: #fff;
+}
+
+.ops-tab.active {
+  color: #00FF88;
+  border-bottom-color: #00FF88;
+}
+
+.ops-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
