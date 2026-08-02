@@ -1,0 +1,489 @@
+/* ===== Retail Panel ===== */
+.retail-panel {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+  padding: 24px;
+  gap: 24px;
+  overflow-y: auto;
+  background: #050508;
+  color: #fff;
+}
+
+.retail-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.retail-panel-header h2 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: #00FF88;
+}
+
+/* ===== KPI Strip ===== */
+.retail-kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.retail-kpi {
+  background: #0d0d14;
+  border: 1px solid #1e1e2e;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.retail-kpi-label {
+  font-size: 10px;
+  color: #8b92a5;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.retail-kpi-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.retail-kpi-delta {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.retail-kpi-delta.up { color: #00FF88; }
+.retail-kpi-delta.down { color: #FF3366; }
+
+/* ===== Revenue Timeline ===== */
+.revenue-timeline {
+  background: #0d0d14;
+  border: 1px solid #1e1e2e;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.revenue-timeline h3 {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: #fff;
+}
+
+.timeline-chart {
+  position: relative;
+  height: 220px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding-bottom: 30px;
+  padding-left: 50px;
+}
+
+.timeline-y-axis {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 30px;
+  width: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #8b92a5;
+  text-align: right;
+  padding-right: 8px;
+}
+
+.timeline-bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+}
+
+.timeline-area {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  transition: height 0.5s ease;
+}
+
+.timeline-bar {
+  width: 60%;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  z-index: 2;
+  position: absolute;
+  bottom: 0;
+  background: rgba(74, 158, 255, 0.7);
+  transition: height 0.5s ease;
+}
+
+.timeline-bar:hover {
+  background: #4A9EFF;
+}
+
+.timeline-baseline {
+  position: absolute;
+  left: 50px;
+  right: 0;
+  height: 2px;
+  border-top: 2px dashed #FFB80060;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.timeline-baseline-label {
+  position: absolute;
+  right: 0;
+  top: -16px;
+  font-size: 10px;
+  color: #FFB800;
+}
+
+.timeline-x-axis {
+  display: flex;
+  padding-left: 50px;
+  margin-top: 8px;
+}
+
+.timeline-x-label {
+  flex: 1;
+  text-align: center;
+  font-size: 10px;
+  color: #8b92a5;
+}
+
+.below-baseline {
+  background: rgba(255, 68, 68, 0.08) !important;
+}
+
+/* ===== Scatter Plot ===== */
+.cross-dataset-section {
+  background: #0d0d14;
+  border: 1px solid #1e1e2e;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.cross-dataset-section h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #fff;
+}
+
+.cross-dataset-subtitle {
+  font-size: 12px;
+  color: #8b92a5;
+  margin-bottom: 16px;
+}
+
+.scatter-container {
+  position: relative;
+  height: 280px;
+  padding-left: 60px;
+  padding-bottom: 40px;
+}
+
+.scatter-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-left: 1px solid #333;
+  border-bottom: 1px solid #333;
+}
+
+.scatter-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  z-index: 2;
+}
+
+.scatter-dot:hover {
+  transform: scale(2);
+  opacity: 1;
+  z-index: 5;
+}
+
+.scatter-y-axis {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 40px;
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #8b92a5;
+  text-align: right;
+  padding-right: 8px;
+}
+
+.scatter-x-axis {
+  position: absolute;
+  left: 60px;
+  right: 0;
+  bottom: 0;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #8b92a5;
+  padding-top: 8px;
+}
+
+.scatter-axis-label {
+  position: absolute;
+  font-size: 11px;
+  color: #8b92a5;
+}
+
+.scatter-axis-label.x {
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.scatter-axis-label.y {
+  left: 4px;
+  top: 50%;
+  transform: rotate(-90deg) translateX(-50%);
+  transform-origin: left top;
+  white-space: nowrap;
+}
+
+.regression-line {
+  position: absolute;
+  height: 2px;
+  background: #00FF88;
+  z-index: 1;
+  transform-origin: left center;
+  opacity: 0.6;
+}
+
+.r-squared-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #00FF8815;
+  border: 1px solid #00FF8840;
+  color: #00FF88;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 3;
+}
+
+.scatter-legend {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.scatter-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #8b92a5;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* ===== Bottom Grid: Donut + Stacked Bar + Heatmap ===== */
+.retail-bottom-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr 1fr;
+  gap: 24px;
+}
+
+.retail-card {
+  background: #0d0d14;
+  border: 1px solid #1e1e2e;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.retail-card h3 {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: #fff;
+}
+
+/* Donut Chart */
+.donut-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 16px;
+}
+
+.donut-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.donut-center-value {
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.donut-center-label {
+  font-size: 10px;
+  color: #8b92a5;
+}
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.donut-legend-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.donut-legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* Stacked Bars */
+.stacked-bars {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  height: 200px;
+  padding-bottom: 24px;
+}
+
+.stacked-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column-reverse;
+  height: 100%;
+  position: relative;
+}
+
+.stacked-segment {
+  transition: height 0.5s ease;
+  border-radius: 2px;
+  margin-bottom: 1px;
+}
+
+.stacked-label {
+  text-align: center;
+  font-size: 11px;
+  color: #8b92a5;
+  margin-top: 8px;
+  position: absolute;
+  bottom: -20px;
+  width: 100%;
+}
+
+/* Revenue Heatmap */
+.rev-heatmap {
+  display: grid;
+  gap: 2px;
+}
+
+.rev-hm-cell {
+  border-radius: 2px;
+  min-height: 14px;
+  transition: background 0.3s;
+}
+
+.rev-hm-axes {
+  display: flex;
+}
+
+.rev-hm-y {
+  width: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  font-size: 9px;
+  color: #8b92a5;
+  text-align: right;
+  padding-right: 6px;
+}
+
+.rev-hm-x {
+  display: flex;
+  justify-content: space-around;
+  font-size: 10px;
+  color: #8b92a5;
+  padding-top: 6px;
+  margin-left: 36px;
+}
+
+/* Top Sellers Table */
+.top-sellers-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.top-sellers-table th {
+  text-align: left;
+  padding: 8px;
+  font-size: 10px;
+  color: #8b92a5;
+  text-transform: uppercase;
+  border-bottom: 1px solid #333;
+}
+
+.top-sellers-table td {
+  padding: 8px;
+  font-size: 13px;
+  color: #ccc;
+  border-bottom: 1px solid #1e1e2e;
+}
+
+.top-sellers-table tr:hover td {
+  background: #12121a;
+}
+
+@media (max-width: 1200px) {
+  .retail-kpi-strip {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .retail-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
