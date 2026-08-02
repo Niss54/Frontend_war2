@@ -4,6 +4,7 @@ import { Play, Pause, Plane, Grid, Luggage, Shield, Users, ShoppingBag, Bell, Se
 import { useAirportData } from '../../../context/AirportContext';
 import { useSimulation } from '../../../context/SimulationContext';
 import { useFilter } from '../../../context/FilterContext';
+import { HandoverReport } from '../ui/HandoverReport';
 import { getActiveFlights } from '../../../utils/airportUtils';
 import { useCountUp } from '../../../hooks/useCountUp';
 import { AlertPanel } from '../../modules/alerts/AlertPanel';
@@ -76,6 +77,7 @@ export const CommandHeader: React.FC = () => {
   const { store } = useAirportData();
   const { currentTime, isPlaying, togglePlay, speed, setSpeed, alerts } = useSimulation();
   const { searchQuery, setSearchQuery } = useFilter();
+  const [isHandoverModalOpen, setIsHandoverModalOpen] = useState(false);
   
   const [isAlertPanelOpen, setIsAlertPanelOpen] = useState(false);
   
@@ -174,6 +176,31 @@ export const CommandHeader: React.FC = () => {
               <div className={`dot ${hasCriticalAlerts ? 'alert' : 'nominal'}`}></div>
               {hasCriticalAlerts ? 'ALERT' : 'NOMINAL'}
             </div>
+            <button 
+              onClick={() => setIsHandoverModalOpen(true)}
+              style={{
+                fontFamily: '"Courier New", Courier, monospace',
+                fontSize: '10px',
+                border: '1px solid #FFB80040',
+                background: 'transparent',
+                color: '#FFB800',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                marginLeft: '8px',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 184, 0, 0.1)';
+                e.currentTarget.style.borderColor = '#FFB800';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.borderColor = '#FFB80040';
+              }}
+            >
+              HANDOVER REPORT
+            </button>
           </div>
         </div>
 
@@ -320,6 +347,7 @@ export const CommandHeader: React.FC = () => {
       </div>
       
       <AlertPanel isOpen={isAlertPanelOpen} onClose={() => setIsAlertPanelOpen(false)} />
+      <HandoverReport isOpen={isHandoverModalOpen} onClose={() => setIsHandoverModalOpen(false)} />
     </>
   );
 };
