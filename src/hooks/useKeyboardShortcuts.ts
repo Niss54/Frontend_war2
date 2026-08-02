@@ -1,76 +1,60 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useFilter } from '../context/FilterContext';
 import { useSimulation } from '../context/SimulationContext';
+import { useFlightFilter } from './useFlightFilter';
 
-export const useKeyboardShortcuts = (toggleAlertPanel: () => void) => {
+export function useKeyboardShortcuts() {
   const navigate = useNavigate();
-  const { clearAllFilters, setSelectedFlight } = useFilter();
   const { togglePlay } = useSimulation();
+  const { clearFlight } = useFlightFilter();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger if user is typing in an input or textarea
-      if (
-        document.activeElement?.tagName === 'INPUT' ||
-        document.activeElement?.tagName === 'TEXTAREA' ||
-        (document.activeElement as HTMLElement)?.isContentEditable
-      ) {
-        // Only allow ESC to blur/escape
-        if (e.key === 'Escape') {
-          (document.activeElement as HTMLElement).blur();
+      // Don't trigger if user is typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        if (e.key !== 'Escape') {
+          return;
         }
-        return;
       }
 
-      switch (e.key.toLowerCase()) {
-        case 'escape':
-          e.preventDefault();
-          clearAllFilters();
-          setSelectedFlight(null);
-          // if panels are open, we might want to close them here too
+      switch (e.key) {
+        case 'Escape':
+          clearFlight();
           break;
-          
         case 'f':
+        case 'F':
           e.preventDefault();
-          const searchInput = document.getElementById('global-search');
-          if (searchInput) searchInput.focus();
-          break;
-          
-        case 'a':
-          e.preventDefault();
-          toggleAlertPanel();
-          break;
-          
-        case 's':
-          e.preventDefault();
-          togglePlay();
-          break;
-          
-        case '1':
-          e.preventDefault(); navigate('/flights'); break;
-        case '2':
-          e.preventDefault(); navigate('/gates'); break;
-        case '3':
-          e.preventDefault(); navigate('/baggage'); break;
-        case '4':
-          e.preventDefault(); navigate('/security'); break;
-        case '5':
-          e.preventDefault(); navigate('/staff'); break;
-        case '6':
-          e.preventDefault(); navigate('/retail'); break;
-          
-        case 'k':
-          if (e.metaKey || e.ctrlKey) {
-            e.preventDefault();
-            // TODO: Command Palette AW-12
-            console.log('Open Command Palette (AW-12)');
+          const searchInput = document.querySelector('.search-input') as HTMLInputElement;
+          if (searchInput) {
+            searchInput.focus();
           }
+          break;
+        case '1':
+          navigate('/flights');
+          break;
+        case '2':
+          navigate('/gates');
+          break;
+        case '3':
+          navigate('/baggage');
+          break;
+        case '4':
+          navigate('/security');
+          break;
+        case '5':
+          navigate('/staff');
+          break;
+        case '6':
+          navigate('/retail');
+          break;
+        case 's':
+        case 'S':
+          togglePlay();
           break;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [navigate, clearAllFilters, setSelectedFlight, toggleAlertPanel, togglePlay]);
-};
+  }, [navigate, togglePlay, clearFlight]);
+}
