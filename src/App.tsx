@@ -2,19 +2,19 @@ import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAirportData } from './context/AirportContext';
 import { FilterProvider } from './context/FilterContext';
-import { CommandHeader } from './components/layout/CommandHeader';
+import { CommandHeader } from './components/core/layout/CommandHeader';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
-import { ErrorBoundary } from './components/layout/ErrorBoundary';
-import { PanelSkeleton } from './components/layout/PanelSkeleton';
+import { ErrorBoundary } from './components/core/layout/ErrorBoundary';
+import { PanelSkeleton } from './components/core/layout/PanelSkeleton';
 import './App.css';
 
 // Lazy load all major panels
-const FlightOpsBoard = React.lazy(() => import('./components/flights/FlightOpsBoard').then(m => ({ default: m.FlightOpsBoard })));
-const GatePanel = React.lazy(() => import('./components/gates/GatePanel').then(m => ({ default: m.GatePanel })));
-const PaxBagOperations = React.lazy(() => import('./components/paxbag/PaxBagOperations').then(m => ({ default: m.PaxBagOperations })));
-const OpsSupport = React.lazy(() => import('./components/ops/OpsSupport').then(m => ({ default: m.OpsSupport })));
-const RetailPanel = React.lazy(() => import('./components/retail/RetailPanel').then(m => ({ default: m.RetailPanel })));
-const FlightDetailPanel = React.lazy(() => import('./components/flights/FlightDetailPanel').then(m => ({ default: m.FlightDetailPanel })));
+const FlightOpsBoard = React.lazy(() => import('./components/modules/flights/FlightOpsBoard').then(m => ({ default: m.FlightOpsBoard })));
+const GatePanel = React.lazy(() => import('./components/modules/gates/GatePanel').then(m => ({ default: m.GatePanel })));
+const PaxBagOperations = React.lazy(() => import('./components/modules/paxbag/PaxBagOperations').then(m => ({ default: m.PaxBagOperations })));
+const OpsSupport = React.lazy(() => import('./components/modules/ops/OpsSupport').then(m => ({ default: m.OpsSupport })));
+const RetailPanel = React.lazy(() => import('./components/modules/retail/RetailPanel').then(m => ({ default: m.RetailPanel })));
+const FlightDetailPanel = React.lazy(() => import('./components/modules/flights/FlightDetailPanel').then(m => ({ default: m.FlightDetailPanel })));
 
 // A small component to initialize the global keyboard shortcuts
 const GlobalShortcuts: React.FC = () => {
