@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useAirportData } from './AirportContext';
 import { SimulationEngine } from '../engine/SimulationEngine';
-import { eventBus, SIMULATION_TICK, TickPayload } from '../utils/EventBus';
+import { eventBus, SIMULATION_TICK } from '../utils/EventBus';
+import type { TickPayload } from '../utils/EventBus';
 
 interface SimulationContextValue {
   currentTime: Date;
