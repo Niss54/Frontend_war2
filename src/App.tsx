@@ -1,12 +1,26 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAirportData } from './context/AirportContext';
+import { FilterProvider } from './context/FilterContext';
 import { CommandHeader } from './components/layout/CommandHeader';
 import { FlightOpsBoard } from './components/flights/FlightOpsBoard';
 import { GatePanel } from './components/gates/GatePanel';
 import { PaxBagOperations } from './components/paxbag/PaxBagOperations';
 import { OpsSupport } from './components/ops/OpsSupport';
 import { RetailPanel } from './components/retail/RetailPanel';
+import { FlightDetailPanel } from './components/flights/FlightDetailPanel';
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import './App.css';
+
+// A small component to initialize the global keyboard shortcuts
+const GlobalShortcuts: React.FC = () => {
+  // Pass a dummy function for toggleAlertPanel since it's controlled locally in CommandHeader for now.
+  // Ideally, CommandHeader state would move to context, but we will just simulate a click on the bell.
+  useKeyboardShortcuts(() => {
+    const btn = document.querySelector('.alert-bell-btn') as HTMLButtonElement;
+    if (btn) btn.click();
+  });
+  return null;
+};
 
 function App() {
   const { store, derivedData, isLoading, error } = useAirportData();
@@ -16,7 +30,8 @@ function App() {
   if (!store || !derivedData) return <div className="error">No data loaded</div>;
 
   return (
-    <>
+    <FilterProvider>
+      <GlobalShortcuts />
       <CommandHeader />
       <Routes>
         <Route path="/" element={<Navigate to="/flights" replace />} />
@@ -31,7 +46,8 @@ function App() {
         {/* Future routes will be added here */}
         <Route path="*" element={<div style={{padding: '20px', color: '#fff'}}>Module in development</div>} />
       </Routes>
-    </>
+      <FlightDetailPanel />
+    </FilterProvider>
   )
 }
 

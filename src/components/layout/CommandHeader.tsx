@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Play, Pause, Plane, Grid, Luggage, Shield, Users, ShoppingBag, Bell } from 'lucide-react';
+import { Play, Pause, Plane, Grid, Luggage, Shield, Users, ShoppingBag, Bell, Search } from 'lucide-react';
 import { useAirportData } from '../../context/AirportContext';
 import { useSimulation } from '../../context/SimulationContext';
+import { useFilter } from '../../context/FilterContext';
 import { getActiveFlights } from '../../utils/airportUtils';
 import { useCountUp } from '../../hooks/useCountUp';
 import { AlertPanel } from '../alerts/AlertPanel';
@@ -72,6 +73,7 @@ const NavLinks: React.FC = () => {
 export const CommandHeader: React.FC = () => {
   const { store } = useAirportData();
   const { currentTime, isPlaying, togglePlay, speed, setSpeed, alerts } = useSimulation();
+  const { searchQuery, setSearchQuery } = useFilter();
   
   const [isAlertPanelOpen, setIsAlertPanelOpen] = useState(false);
   
@@ -210,7 +212,7 @@ export const CommandHeader: React.FC = () => {
 
         {/* ZONE C - Ticker & Nav */}
         <div className="zone-c">
-          <div className="ticker-container">
+          <div className="ticker-container" style={{ flex: 1, overflow: 'hidden' }}>
             <div className="ticker-content">
               {kpis?.recentAlerts?.map((a, i) => (
                 <span key={i} className="ticker-item">⚠️ {a.message}</span>
@@ -219,7 +221,29 @@ export const CommandHeader: React.FC = () => {
             </div>
           </div>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* Global Search Bar */}
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <Search size={14} style={{ position: 'absolute', left: '8px', color: '#8b92a5' }} />
+              <input 
+                id="global-search"
+                type="text" 
+                placeholder="Search flight, origin... (Press F)" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  background: '#12121a',
+                  border: '1px solid #1e1e2e',
+                  color: '#fff',
+                  padding: '4px 8px 4px 28px',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  width: '180px',
+                  outline: 'none'
+                }}
+              />
+            </div>
+            
             <NavLinks />
             <button 
               className={`icon-btn alert-bell-btn ${hasCriticalAlerts ? 'has-critical' : unacknowledgedAlerts.length > 0 ? 'has-alerts' : ''}`}

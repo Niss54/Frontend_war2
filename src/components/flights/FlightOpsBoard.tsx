@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAirportData } from '../../context/AirportContext';
 import { useSimulation } from '../../context/SimulationContext';
+import { useFilter } from '../../context/FilterContext';
 import { FlightRow } from './FlightRow';
 import { eventBus, FLIGHT_STATUS_CHANGED } from '../../utils/EventBus';
 import './FlightOpsBoard.css';
@@ -15,21 +16,24 @@ export const FlightOpsBoard: React.FC = () => {
   const { flightIndex, isLoading, error } = useAirportData();
   const { currentTime } = useSimulation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const filterContext = useFilter();
 
   const [toasts, setToasts] = useState<Toast[]>([]);
   let toastIdCounter = useRef(0);
 
-  // Search & Filter state from URL
-  const searchQuery = searchParams.get('q') || '';
-  const filterStatus = searchParams.get('status') || 'ALL';
-  const filterTerminal = searchParams.get('terminal') || 'ALL';
-  const filterAirline = searchParams.get('airline') || 'ALL';
+  // Search & Filter state from global context
+  const searchQuery = filterContext.searchQuery;
+  const filterStatus = filterContext.statusFilter || 'ALL';
+  const filterTerminal = filterContext.selectedTerminal || 'ALL';
+  const filterAirline = filterContext.selectedAirline || 'ALL';
+  
+  // Local sort state
   const sortBy = searchParams.get('sort') || 'time';
 
   // Available options
   const allFlights = Array.from(flightIndex.values());
   const airlines = ['ALL', ...new Set(allFlights.map(f => f.flight.airline_code))].sort();
-  const terminals = ['ALL', 'T1', 'T2', 'T3'];
+  const terminals = ['ALL', 'Terminal 1', 'Terminal 2', 'Terminal 3', 'T1', 'T2', 'T3'];
   const statuses = ['ALL', 'SCHEDULED', 'BOARDING', 'DEPARTED', 'DELAYED', 'CANCELLED'];
 
   // EventBus Listener for Toasts
@@ -47,19 +51,12 @@ export const FlightOpsBoard: React.FC = () => {
     return () => eventBus.off(FLIGHT_STATUS_CHANGED, handleStatusChange);
   }, []);
 
-  const updateParam = (key: string, value: string) => {
-    const newParams = new URLSearchParams(searchParams);
-    if (value && value !== 'ALL') newParams.set(key, value);
-    else newParams.delete(key);
-    setSearchParams(newParams);
-  };
-
   // Process flights (Filter & Sort)
   const processedFlights = useMemo(() => {
     let filtered = allFlights;
-
-    // Apply active window filter (Flights for today or active)
     const todayStr = currentTime.toISOString().split('T')[0];
+
+    // Filter to today
     filtered = filtered.filter(f => 
       f.flight.scheduled_departure?.startsWith(todayStr) || 
       f.flight.scheduled_arrival?.startsWith(todayStr)
@@ -104,8 +101,13 @@ export const FlightOpsBoard: React.FC = () => {
   const arrivals = processedFlights.filter(f => !!f.flight.scheduled_arrival && f.flight.destination === 'DEL');
 
   const handleRowClick = (flightId: string) => {
-    // Stub for AW-10
-    console.log('Open detail panel for', flightId);
+    filterContext.setSelectedFlight(flightId);
+  };
+
+  const updateSortParam = (val: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('sort', val);
+    setSearchParams(newParams, { replace: true });
   };
 
   if (isLoading) return <div className="board-loading">Initializing Engine...</div>;
@@ -121,7 +123,7 @@ export const FlightOpsBoard: React.FC = () => {
             type="text" 
             placeholder="Search flight, dest, airline..." 
             value={searchQuery}
-            onChange={(e) => updateParam('q', e.target.value)}
+            onChange={(e) => filterContext.setSearchQuery(e.target.value)}
             className="search-input"
           />
         </div>
@@ -129,19 +131,19 @@ export const FlightOpsBoard: React.FC = () => {
         <div className="filter-middle">
           <div className="filter-group">
             <span className="filter-label">Status</span>
-            <select value={filterStatus} onChange={(e) => updateParam('status', e.target.value)}>
+            <select value={filterStatus} onChange={(e) => filterContext.setStatus(e.target.value === 'ALL' ? null : e.target.value)}>
               {statuses.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
           <div className="filter-group">
             <span className="filter-label">Terminal</span>
-            <select value={filterTerminal} onChange={(e) => updateParam('terminal', e.target.value)}>
+            <select value={filterTerminal} onChange={(e) => filterContext.setTerminal(e.target.value === 'ALL' ? null : e.target.value)}>
               {terminals.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
           <div className="filter-group">
             <span className="filter-label">Airline</span>
-            <select value={filterAirline} onChange={(e) => updateParam('airline', e.target.value)}>
+            <select value={filterAirline} onChange={(e) => filterContext.setAirline(e.target.value === 'ALL' ? null : e.target.value)}>
               {airlines.map(a => <option key={a} value={a}>{a}</option>)}
             </select>
           </div>
@@ -149,7 +151,7 @@ export const FlightOpsBoard: React.FC = () => {
 
         <div className="filter-right">
           <span className="filter-label">Sort</span>
-          <select value={sortBy} onChange={(e) => updateParam('sort', e.target.value)}>
+          <select value={sortBy} onChange={(e) => updateSortParam(e.target.value)}>
             <option value="time">Time</option>
             <option value="status">Status</option>
             <option value="gate">Gate</option>
