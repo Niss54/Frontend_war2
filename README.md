@@ -1,6 +1,6 @@
 <div align="center">
 
-![APL](https://img.shields.io/badge/APL-2026-black?style=flat-square)
+![Frontend War](https://img.shields.io/badge/APL-2026-black?style=flat-square)
 ![Year](https://img.shields.io/badge/YEAR-2026-22c55e?style=flat-square)
 ![Track](https://img.shields.io/badge/TRACK-FRONTEND%20WARS-3b82f6?style=flat-square)
 ![Domain](https://img.shields.io/badge/DOMAIN-AIRPORT%20OPS-f59e0b?style=flat-square)
