@@ -3,6 +3,7 @@ import { useAirportData } from './context/AirportContext';
 import { CommandHeader } from './components/layout/CommandHeader';
 import { FlightOpsBoard } from './components/flights/FlightOpsBoard';
 import { GatePanel } from './components/gates/GatePanel';
+import { PaxBagOperations } from './components/paxbag/PaxBagOperations';
 import './App.css';
 
 function App() {
@@ -19,6 +20,8 @@ function App() {
         <Route path="/" element={<Navigate to="/flights" replace />} />
         <Route path="/flights" element={<FlightOpsBoard />} />
         <Route path="/gates" element={<GatePanel />} />
+        <Route path="/baggage" element={<PaxBagOperations defaultTab="baggage" />} />
+        <Route path="/passengers" element={<PaxBagOperations defaultTab="passengers" />} />
         {/* Future routes will be added here */}
         <Route path="*" element={<div style={{padding: '20px', color: '#fff'}}>Module in development</div>} />
       </Routes>
