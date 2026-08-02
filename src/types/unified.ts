@@ -123,5 +123,6 @@ export interface AirportContextValue {
   timelineIndex: TimelineIndex;
   derivedData: DerivedOpsData | null;
   isLoading: boolean;
+  loadProgress: number;
   error: string | null;
 }

@@ -11,7 +11,7 @@ interface FlightRowProps {
   onClick: (flightId: string) => void;
 }
 
-export const FlightRow: React.FC<FlightRowProps> = ({ flightData, type, onClick }) => {
+const FlightRowComponent: React.FC<FlightRowProps> = ({ flightData, type, onClick }) => {
   const f = flightData.flight;
   // Local state for status to allow EventBus updates without full board re-render
   const [status, setStatus] = useState(f.status || 'SCHEDULED');
@@ -83,3 +83,10 @@ export const FlightRow: React.FC<FlightRowProps> = ({ flightData, type, onClick 
     </div>
   );
 };
+
+// Custom comparison function for memoization
+export const FlightRow = React.memo(FlightRowComponent, (prevProps, nextProps) => {
+  return prevProps.flightData.flight.flight_id === nextProps.flightData.flight.flight_id && 
+         prevProps.type === nextProps.type &&
+         prevProps.flightData.flight.status === nextProps.flightData.flight.status;
+});

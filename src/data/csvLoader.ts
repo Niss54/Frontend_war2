@@ -70,7 +70,19 @@ async function parseCSV<T>(
  * Load all 8 CSV datasets in parallel using Promise.all().
  * Returns a typed DataStore object.
  */
-export async function loadAllDatasets(): Promise<DataStore> {
+export async function loadAllDatasets(onProgress?: (progress: number) => void): Promise<DataStore> {
+  let completed = 0;
+  const total = 8;
+  const updateProgress = () => {
+    completed++;
+    if (onProgress) onProgress(Math.round((completed / total) * 100));
+  };
+
+  const wrapPromise = <T,>(p: Promise<T>) => p.then(res => {
+    updateProgress();
+    return res;
+  });
+
   const [
     flights,
     gateEvents,
@@ -81,14 +93,14 @@ export async function loadAllDatasets(): Promise<DataStore> {
     staffShifts,
     retailTransactions,
   ] = await Promise.all([
-    parseCSV<Flight>('flights.csv', COLUMN_MAPS.flights),
-    parseCSV<GateEvent>('gate_events.csv', COLUMN_MAPS.gate_events),
-    parseCSV<Baggage>('baggage.csv', COLUMN_MAPS.baggage),
-    parseCSV<Passenger>('passengers.csv', COLUMN_MAPS.passengers),
-    parseCSV<SecurityScreening>('security_screening.csv', COLUMN_MAPS.security_screening),
-    parseCSV<MaintenanceLog>('maintenance_logs.csv', COLUMN_MAPS.maintenance_logs),
-    parseCSV<StaffShift>('staff_shifts.csv', COLUMN_MAPS.staff_shifts),
-    parseCSV<RetailTransaction>('retail_transactions.csv', COLUMN_MAPS.retail_transactions),
+    wrapPromise(parseCSV<Flight>('flights.csv', COLUMN_MAPS.flights)),
+    wrapPromise(parseCSV<GateEvent>('gate_events.csv', COLUMN_MAPS.gate_events)),
+    wrapPromise(parseCSV<Baggage>('baggage.csv', COLUMN_MAPS.baggage)),
+    wrapPromise(parseCSV<Passenger>('passengers.csv', COLUMN_MAPS.passengers)),
+    wrapPromise(parseCSV<SecurityScreening>('security_screening.csv', COLUMN_MAPS.security_screening)),
+    wrapPromise(parseCSV<MaintenanceLog>('maintenance_logs.csv', COLUMN_MAPS.maintenance_logs)),
+    wrapPromise(parseCSV<StaffShift>('staff_shifts.csv', COLUMN_MAPS.staff_shifts)),
+    wrapPromise(parseCSV<RetailTransaction>('retail_transactions.csv', COLUMN_MAPS.retail_transactions)),
   ]);
 
   return {
